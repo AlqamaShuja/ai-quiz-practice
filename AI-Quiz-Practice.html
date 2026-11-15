@@ -12,6 +12,7 @@
   --acc:#4f46e5; --acc-s:#eef0ff;
   --ok:#157f3c; --ok-bg:#e7f7ec; --ok-bd:#9ad8b0;
   --bad:#c92a2a; --bad-bg:#fdeceb; --bad-bd:#f1b0ac;
+  --warn:#9a6200; --warn-bg:#fff6e5; --warn-bd:#f0ce8e;
   --chip:#eef0f4;
   --shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.04);
   --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
@@ -24,6 +25,7 @@
     --acc:#8b87ff; --acc-s:#1d1f3a;
     --ok:#4ad07e; --ok-bg:#10281b; --ok-bd:#2b6b45;
     --bad:#ff8080; --bad-bg:#2b1316; --bad-bd:#6e2b2b;
+    --warn:#f0b24b; --warn-bg:#2a2112; --warn-bd:#6b5324;
     --chip:#1e2531;
     --shadow:0 1px 2px rgba(0,0,0,.4);
   }
@@ -35,6 +37,7 @@
   --acc:#8b87ff; --acc-s:#1d1f3a;
   --ok:#4ad07e; --ok-bg:#10281b; --ok-bd:#2b6b45;
   --bad:#ff8080; --bad-bg:#2b1316; --bad-bd:#6e2b2b;
+  --warn:#f0b24b; --warn-bg:#2a2112; --warn-bd:#6b5324;
   --chip:#1e2531;
   --shadow:0 1px 2px rgba(0,0,0,.4);
 }
@@ -74,6 +77,26 @@ header.top{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1
 .how{margin:16px 0 0;background:var(--card2);border:1px solid var(--bd);border-left:3px solid var(--acc);
   border-radius:10px;padding:11px 14px;font-size:13.5px;color:var(--tx2)}
 .how b{color:var(--tx)}
+/* ---------- setup panel ---------- */
+.setup{margin:18px 0 0;background:var(--card);border:1px solid var(--bd);border-radius:13px;padding:14px;box-shadow:var(--shadow)}
+.setrow{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.setrow:last-of-type{margin-bottom:0}
+.setlbl{font-size:10.5px;font-weight:750;letter-spacing:.09em;text-transform:uppercase;color:var(--tx3);min-width:62px}
+.sel{border:1px solid var(--bd);background:var(--card2);color:var(--tx2);cursor:pointer;font-family:inherit;
+  border-radius:10px;padding:7px 12px;font-size:13px;font-weight:600;display:inline-flex;gap:7px;align-items:center}
+.sel:hover{border-color:var(--acc);color:var(--tx)}
+.sel .tick{width:15px;height:15px;border-radius:4px;border:1.5px solid var(--bd);display:grid;place-items:center;flex:none}
+.sel .tick svg{width:11px;height:11px;display:none;color:#fff}
+.sel.on{background:var(--acc-s);border-color:var(--acc);color:var(--acc)}
+.sel.on .tick{background:var(--acc);border-color:var(--acc)}
+.sel.on .tick svg{display:block}
+.sel .cnt{font-size:11px;opacity:.78;font-variant-numeric:tabular-nums}
+.sel.ex.on{background:var(--warn-bg,#2a2112);border-color:var(--warn,#f0b24b);color:var(--warn,#f0b24b)}
+.sel.ex.on .tick{background:var(--warn,#f0b24b);border-color:var(--warn,#f0b24b)}
+.go{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:650}
+.go:hover{color:#fff;filter:brightness(1.08)}
+.sethint{margin:10px 0 0;font-size:12px;color:var(--tx3)}
+.sethint b{color:var(--tx2)}
 .chips{display:flex;gap:6px;flex-wrap:wrap;margin:18px 0 0;position:sticky;top:76px;z-index:30;
   background:var(--bg);padding:8px 0;border-bottom:1px solid var(--bd)}
 @media (max-width:620px){.chips{position:static}}
@@ -182,7 +205,7 @@ footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--bd);color:var
   <div class="scorebar">
     <div class="bar"><i id="barfill"></i></div>
     <div class="sc">
-      <span class="n">Attempted <b id="s-att">0</b>/100</span>
+      <span class="n">Attempted <b id="s-att">0</b>/<b id="s-tot">100</b></span>
       <span class="g">Sahi <b id="s-ok">0</b></span>
       <span class="r">Galat <b id="s-bad">0</b></span>
       <span class="n">Accuracy <b id="s-acc">&mdash;</b></span>
@@ -192,9 +215,25 @@ footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--bd);color:var
 
 <div class="wrap">
   <section class="hero">
-    <h2>Khud test karein &mdash; saare 100 sawal, aik hi page par</h2>
-    <p>Chapters 1&ndash;5 ke tamam sawal mila kar, random tarteeb mein options ke sath. Har sawal ka jawab click karte hi pata chal jayega ke sahi hai ya galat, sahi option green ho jayega, aur Roman Urdu tashreeh khud khul jayegi.</p>
-    <div class="how"><b>Tareeqa:</b> option par click &rarr; sahi/galat foran &rarr; sahi jawab green tick ke sath &rarr; neeche tashreeh. Options har baar <b>shuffle</b> hote hain (is liye jawab hamesha &ldquo;B&rdquo; nahi hota). Aapka progress browser mein save rehta hai; <b>Restart &amp; shuffle</b> sab reset kar deta hai.</div>
+    <h2>Khud test karein &mdash; apne chapters chunein, sawal mixed order mein</h2>
+    <p>Jo chapters select karenge sirf unhi ke sawal aayenge, <b>random mixed order</b> mein (line se nahi), aur options bhi har baar shuffle. Jawab click karte hi sahi/galat pata chal jata hai, sahi option green ho jata hai, aur Roman Urdu tashreeh khud khul jati hai.</p>
+
+    <div class="setup">
+      <div class="setrow">
+        <span class="setlbl">Chapters</span>
+        <div id="chapsel" style="display:flex;gap:7px;flex-wrap:wrap"></div>
+      </div>
+      <div class="setrow">
+        <span class="setlbl">Mode</span>
+        <button class="sel ex" id="ex-toggle" type="button" title="Sirf woh sawal jahan sahi jawab sab se lamba option nahi hai">
+          <span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><path d="M20 6L9 17l-5-5"/></svg></span>
+          &#9878; Sirf length-exception sawal <span class="cnt" id="ex-count">28</span>
+        </button>
+        <button class="sel go" id="btn-apply" type="button">&#8635; Shuffle &amp; start &mdash; <b id="selcount">100</b> sawal</button>
+      </div>
+      <p class="sethint">Misaal: sirf Chapter 1 aur 2 chunein to bas unhi ke sawal aayenge. <b>Selection badalne ya shuffle karne par quiz dobara shuru hota hai (progress reset)</b>, aur &ldquo;length-exception&rdquo; mode selected chapters ke andar hi apply hota hai.</p>
+    </div>
+
     <div class="chips" id="chips"></div>
   </section>
 
@@ -202,7 +241,7 @@ footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--bd);color:var
 
   <div class="result" id="result">
     <h3>Result</h3>
-    <div class="big"><span id="r-score">0</span><small>/100</small></div>
+    <div class="big"><span id="r-score">0</span><small>/<span id="r-total">100</span></small></div>
     <p id="r-line"></p>
     <div class="acts">
       <button class="btn" id="btn-review">Sirf galat sawal dikhao</button>
@@ -699,86 +738,85 @@ const DATA = [
 ]},
 ];
 
-/* ===================== flatten: 100 questions, with case-study context ===================== */
+/* ===================== flatten: 100 questions + chapter + length-exception flag ===================== */
 var LET = ["A","B","C","D","E"];
 var CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2"><path d="M20 6L9 17l-5-5"/></svg>';
 var CROSS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2"><path d="M6 6l12 12M18 6L6 18"/></svg>';
-var QS = [];
+
+function strip(s){ return String(s).replace(/<[^>]+>/g,"").replace(/&[a-z]+;/g,"x").trim(); }
+
+var QS = [], BY = {};
 DATA.forEach(function (c, ci) {
   c.secs.forEach(function (s) {
     var ctx = null, left = 0;
     s.items.forEach(function (it) {
-      if (it.type === "case") {
-        ctx = it; left = it.span || 2;
-        return;
-      }
+      if (it.type === "case") { ctx = it; left = it.span || 2; return; }
+      var L = it.o.map(function (o) { return strip(o).length; });
+      var max = Math.max.apply(null, L);
       var q = {
         id: s.key.replace(/[^0-9.]/g, "") + "-" + it.n,
-        chap: "Chapter " + (ci + 1), sec: s.key, secTitle: s.title, sn: it.n,
+        ci: ci, chap: "Chapter " + (ci + 1), sec: s.key, sn: it.n,
         q: it.q, o: it.o, a: it.a, qx: it.qx, ax: it.ax,
-        ctx: left > 0 ? ctx : null
+        ctx: left > 0 ? ctx : null,
+        isEx: L[it.a] !== max
       };
       if (left > 0) left--;
-      QS.push(q);
+      QS.push(q); BY[q.id] = q;
     });
   });
 });
 
-/* ===================== state (shuffle order + picks, saved) ===================== */
-var KEY = "aiq-practice-v1";
-var ST = { ord: {}, pick: {} };
+/* ===================== state ===================== */
+var KEY = "aiq-practice-v2";
+var ST = { chaps: DATA.map(function (_, i) { return i; }), ex: false, seq: [], ord: {}, pick: {} };
 try {
   var raw = localStorage.getItem(KEY);
-  if (raw) { var p = JSON.parse(raw); if (p && p.ord) ST = { ord: p.ord || {}, pick: p.pick || {} }; }
+  if (raw) {
+    var p = JSON.parse(raw);
+    if (p && Array.isArray(p.seq) && Array.isArray(p.chaps)) {
+      ST = { chaps: p.chaps, ex: !!p.ex, seq: p.seq.filter(function (id) { return BY[id]; }), ord: p.ord || {}, pick: p.pick || {} };
+    }
+  }
 } catch (e) {}
 function save() { try { localStorage.setItem(KEY, JSON.stringify(ST)); } catch (e) {} }
 
-function shuffled(n) {
-  var a = [], i, j, t;
-  for (i = 0; i < n; i++) a.push(i);
-  for (i = n - 1; i > 0; i--) { j = Math.floor(Math.random() * (i + 1)); t = a[i]; a[i] = a[j]; a[j] = t; }
+function shuffle(a) {
+  a = a.slice();
+  for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; }
   return a;
 }
-QS.forEach(function (q) {
-  var o = ST.ord[q.id];
-  if (!Array.isArray(o) || o.length !== q.o.length) { ST.ord[q.id] = shuffled(q.o.length); }
-});
-save();
+function pool() {
+  return QS.filter(function (q) { return ST.chaps.indexOf(q.ci) !== -1 && (!ST.ex || q.isEx); });
+}
 
 /* ===================== render ===================== */
 var main = document.getElementById("main");
 var nores = document.getElementById("nores");
 
-function ctxBox(c) {
-  return '<div class="how" style="margin:0 0 11px"><b>' + c.title + "</b><br>" + c.body +
-    (c.list ? "<br>" + c.list.map(function (x) { return "&bull; " + x; }).join("<br>") : "") + "</div>";
-}
-
-QS.forEach(function (q, idx) {
-  var el = document.createElement("article");
-  el.className = "q";
-  el.dataset.id = q.id;
-  var ord = ST.ord[q.id];
-  var opts = ord.map(function (orig, pos) {
+function optsHtml(q) {
+  return ST.ord[q.id].map(function (orig, pos) {
     return '<li><button class="opt" type="button" data-orig="' + orig + '">' +
       '<span class="box"><span>' + LET[pos] + "</span>" + CHECK + "</span>" +
       "<span>" + q.o[orig] + "</span><span class=\"tag\"></span></button></li>";
   }).join("");
-  el.innerHTML =
-    '<div class="qtop"><span class="qn">' + (idx + 1) + '</span><span class="src">' + q.sec + " &middot; Q" + q.sn + "</span>" +
+}
+
+function cardHtml(q, idx) {
+  return '<article class="q" data-id="' + q.id + '">' +
+    '<div class="qtop"><span class="qn">' + (idx + 1) + '</span><span class="src">' + q.sec + " &middot; Q" + q.sn +
+    (q.isEx ? " &middot; ⚖ exception" : "") + "</span>" +
     '<span class="verdict v-ok">&#10003; Sahi</span><span class="verdict v-bad">&#10007; Galat</span></div>' +
-    (q.ctx ? ctxBox(q.ctx) : "") +
+    (q.ctx ? '<div class="how" style="margin:0 0 11px"><b>' + q.ctx.title + "</b><br>" + q.ctx.body +
+      (q.ctx.list ? "<br>" + q.ctx.list.map(function (x) { return "&bull; " + x; }).join("<br>") : "") + "</div>" : "") +
     '<p class="qt">' + q.q + "</p>" +
-    '<ol class="opts">' + opts + "</ol>" +
+    '<ol class="opts">' + optsHtml(q) + "</ol>" +
     '<details class="exp"><summary><span class="arw">&#9656;</span>&#128161; Tashreeh &mdash; sawal &amp; jawab (Roman Urdu)</summary>' +
     '<div class="expbody">' +
     '<div class="ex"><span class="lbl">Sawal kya poochh raha hai</span><p>' + q.qx + "</p></div>" +
     '<div class="ex a"><span class="lbl">Sahi jawab &mdash; kyun?</span><p>' + q.ax + "</p></div>" +
-    "</div></details>";
-  main.appendChild(el);
-});
+    "</div></details></article>";
+}
 
-/* reveal a card for a given pick (orig index), autoOpen = scroll/open explanation */
 function reveal(card, q, pickedOrig, autoOpen) {
   var right = pickedOrig === q.a;
   card.classList.add("done", right ? "right" : "wrong");
@@ -788,7 +826,7 @@ function reveal(card, q, pickedOrig, autoOpen) {
     var tag = b.querySelector(".tag");
     if (orig === q.a) {
       b.classList.add("correct");
-      tag.textContent = right && orig === pickedOrig ? "Aapka jawab · sahi" : "Sahi jawab";
+      tag.textContent = right ? "Aapka jawab · sahi" : "Sahi jawab";
     } else if (orig === pickedOrig) {
       b.classList.add("chosen-wrong");
       b.querySelector(".box").innerHTML = CROSS;
@@ -800,27 +838,94 @@ function reveal(card, q, pickedOrig, autoOpen) {
   if (autoOpen) card.querySelector("details.exp").open = true;
 }
 
-/* restore saved picks */
-QS.forEach(function (q) {
-  if (ST.pick[q.id] === undefined) return;
-  var card = main.querySelector('.q[data-id="' + q.id + '"]');
-  reveal(card, q, ST.pick[q.id], false);
-});
+function renderAll() {
+  main.querySelectorAll(".q").forEach(function (n) { n.remove(); });
+  ST.seq.forEach(function (id, i) {
+    var q = BY[id];
+    if (!q) return;
+    if (!Array.isArray(ST.ord[id]) || ST.ord[id].length !== q.o.length) ST.ord[id] = shuffle(q.o.map(function (_, k) { return k; }));
+    main.insertAdjacentHTML("beforeend", cardHtml(q, i));
+  });
+  ST.seq.forEach(function (id) {
+    if (ST.pick[id] === undefined) return;
+    var card = main.querySelector('.q[data-id="' + id + '"]');
+    if (card) reveal(card, BY[id], ST.pick[id], false);
+  });
+  save();
+  stats();
+  applyFilter();
+}
 
-/* click handling */
-var byId = {};
-QS.forEach(function (q) { byId[q.id] = q; });
+function startNew() {
+  var ids = pool().map(function (q) { return q.id; });
+  ST.seq = shuffle(ids);
+  ST.ord = {}; ST.pick = {};
+  ST.seq.forEach(function (id) { ST.ord[id] = shuffle(BY[id].o.map(function (_, k) { return k; })); });
+  filter = "all";
+  Array.prototype.forEach.call(chips.children, function (c) { c.classList.toggle("active", c.dataset.k === "all"); });
+  renderAll();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* ===================== answering ===================== */
 main.addEventListener("click", function (e) {
   var b = e.target.closest(".opt");
   if (!b || b.disabled) return;
   var card = b.closest(".q");
-  var q = byId[card.dataset.id];
+  var q = BY[card.dataset.id];
   var orig = +b.dataset.orig;
   ST.pick[q.id] = orig;
   save();
   reveal(card, q, orig, true);
   stats();
 });
+
+/* ===================== chapter / mode selectors ===================== */
+var chapsel = document.getElementById("chapsel");
+DATA.forEach(function (c, ci) {
+  var n = QS.filter(function (q) { return q.ci === ci; }).length;
+  var b = document.createElement("button");
+  b.className = "sel";
+  b.type = "button"; b.dataset.ch = ci; b.title = c.ch;
+  b.innerHTML = '<span class="tick">' + CHECK + "</span>Ch " + (ci + 1) + ' <span class="cnt">' + n + "</span>";
+  chapsel.appendChild(b);
+});
+var allBtn = document.createElement("button");
+allBtn.className = "sel"; allBtn.type = "button"; allBtn.id = "ch-all";
+allBtn.innerHTML = "Saare / koi nahi";
+chapsel.appendChild(allBtn);
+
+var exToggle = document.getElementById("ex-toggle");
+document.getElementById("ex-count").textContent = QS.filter(function (q) { return q.isEx; }).length;
+
+function paintSelectors() {
+  Array.prototype.forEach.call(chapsel.children, function (b) {
+    if (b.dataset.ch === undefined) return;
+    b.classList.toggle("on", ST.chaps.indexOf(+b.dataset.ch) !== -1);
+  });
+  exToggle.classList.toggle("on", ST.ex);
+  document.getElementById("selcount").textContent = pool().length;
+}
+
+chapsel.addEventListener("click", function (e) {
+  var b = e.target.closest(".sel"); if (!b) return;
+  if (b.id === "ch-all") {
+    ST.chaps = ST.chaps.length === DATA.length ? [] : DATA.map(function (_, i) { return i; });
+  } else {
+    var ci = +b.dataset.ch, k = ST.chaps.indexOf(ci);
+    if (k === -1) ST.chaps.push(ci); else ST.chaps.splice(k, 1);
+  }
+  paintSelectors();
+  startNew();
+});
+exToggle.addEventListener("click", function () {
+  ST.ex = !ST.ex;
+  paintSelectors();
+  startNew();
+});
+document.getElementById("btn-apply").addEventListener("click", startNew);
+document.getElementById("btn-restart").addEventListener("click", startNew);
+document.getElementById("btn-restart2").addEventListener("click", startNew);
 
 /* ===================== stats + filters ===================== */
 var FILTERS = [
@@ -847,79 +952,60 @@ chips.addEventListener("click", function (e) {
 
 function counts() {
   var att = 0, ok = 0, bad = 0;
-  QS.forEach(function (q) {
-    var p = ST.pick[q.id];
+  ST.seq.forEach(function (id) {
+    var p = ST.pick[id];
     if (p === undefined) return;
-    att++; if (p === q.a) ok++; else bad++;
+    att++; if (p === BY[id].a) ok++; else bad++;
   });
-  return { att: att, ok: ok, bad: bad, todo: QS.length - att };
+  return { tot: ST.seq.length, att: att, ok: ok, bad: bad, todo: ST.seq.length - att };
 }
 
 function applyFilter() {
   var shown = 0;
-  QS.forEach(function (q) {
-    var card = main.querySelector('.q[data-id="' + q.id + '"]');
-    var p = ST.pick[q.id];
+  ST.seq.forEach(function (id) {
+    var card = main.querySelector('.q[data-id="' + id + '"]');
+    if (!card) return;
+    var p = ST.pick[id], a = BY[id].a;
     var keep = filter === "all" ? true
       : filter === "todo" ? p === undefined
-      : filter === "wrong" ? (p !== undefined && p !== q.a)
-      : (p !== undefined && p === q.a);
+      : filter === "wrong" ? (p !== undefined && p !== a)
+      : (p !== undefined && p === a);
     card.classList.toggle("hidden", !keep);
     if (keep) shown++;
   });
+  nores.textContent = ST.seq.length === 0
+    ? "Koi sawal nahi — upar se kam az kam aik chapter select karein (ya length-exception mode band karein)."
+    : "Is filter mein koi sawal nahi.";
   nores.style.display = shown ? "none" : "block";
 }
 
 function stats() {
   var c = counts();
   document.getElementById("s-att").textContent = c.att;
+  document.getElementById("s-tot").textContent = c.tot;
   document.getElementById("s-ok").textContent = c.ok;
   document.getElementById("s-bad").textContent = c.bad;
   document.getElementById("s-acc").textContent = c.att ? Math.round((c.ok / c.att) * 100) + "%" : "—";
-  document.getElementById("barfill").style.width = (c.att / QS.length * 100) + "%";
-  chips.querySelector('[data-c="all"]').textContent = QS.length;
+  document.getElementById("barfill").style.width = (c.tot ? c.att / c.tot * 100 : 0) + "%";
+  chips.querySelector('[data-c="all"]').textContent = c.tot;
   chips.querySelector('[data-c="todo"]').textContent = c.todo;
   chips.querySelector('[data-c="wrong"]').textContent = c.bad;
   chips.querySelector('[data-c="right"]').textContent = c.ok;
   var res = document.getElementById("result");
-  if (c.att === QS.length) {
+  if (c.tot > 0 && c.att === c.tot) {
     res.classList.add("show");
     document.getElementById("r-score").textContent = c.ok;
-    var pc = Math.round(c.ok / QS.length * 100);
+    document.getElementById("r-total").textContent = c.tot;
+    var pc = Math.round(c.ok / c.tot * 100);
     document.getElementById("r-line").innerHTML = "Accuracy <b>" + pc + "%</b> &mdash; " + c.ok + " sahi, " + c.bad + " galat. " +
       (pc >= 90 ? "Zabardast! Revision ke liye sirf galat wale dekh lein."
         : pc >= 70 ? "Acha hai. Galat wale sawal dobara parhein, tashreeh ke sath."
-        : "Thori mehnat chahiye &mdash; galat wale sawal aur un ki tashreeh dhyaan se parhein.");
+        : "Thori mehnat chahiye — galat wale sawal aur un ki tashreeh dhyaan se parhein.");
   } else {
     res.classList.remove("show");
   }
-  if (filter !== "all") applyFilter();
 }
 
-/* ===================== restart ===================== */
-function restart() {
-  ST = { ord: {}, pick: {} };
-  QS.forEach(function (q) { ST.ord[q.id] = shuffled(q.o.length); });
-  save();
-  main.querySelectorAll(".q").forEach(function (card) {
-    var q = byId[card.dataset.id];
-    card.classList.remove("done", "right", "wrong");
-    card.querySelector("details.exp").open = false;
-    var ol = card.querySelector("ol.opts");
-    ol.innerHTML = ST.ord[q.id].map(function (orig, pos) {
-      return '<li><button class="opt" type="button" data-orig="' + orig + '">' +
-        '<span class="box"><span>' + LET[pos] + "</span>" + CHECK + "</span>" +
-        "<span>" + q.o[orig] + "</span><span class=\"tag\"></span></button></li>";
-    }).join("");
-  });
-  filter = "all";
-  Array.prototype.forEach.call(chips.children, function (c) { c.classList.toggle("active", c.dataset.k === "all"); });
-  applyFilter();
-  stats();
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
-document.getElementById("btn-restart").addEventListener("click", restart);
-document.getElementById("btn-restart2").addEventListener("click", restart);
 document.getElementById("btn-review").addEventListener("click", function () {
   filter = "wrong";
   Array.prototype.forEach.call(chips.children, function (c) { c.classList.toggle("active", c.dataset.k === "wrong"); });
@@ -938,13 +1024,24 @@ function setTheme(t) {
 themeBtn.addEventListener("click", function () {
   setTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark");
 });
+
+/* ===================== init ===================== */
 (function init() {
   var t = null;
   try { t = localStorage.getItem("aiquiz-theme"); } catch (e) {}
   if (!t) t = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
   setTheme(t);
-  stats();
-  applyFilter();
+
+  /* link like AI-Quiz-Practice.html#ex starts the 28-question exception set */
+  if ((location.hash || "").toLowerCase().indexOf("ex") !== -1) {
+    ST.chaps = DATA.map(function (_, i) { return i; });
+    ST.ex = true;
+    paintSelectors();
+    startNew();
+    return;
+  }
+  paintSelectors();
+  if (!ST.seq.length) startNew(); else renderAll();
 })();
 </script>
 </body>
