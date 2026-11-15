@@ -172,6 +172,26 @@ details.exp > summary:hover{color:var(--tx)}
 code{font-family:var(--mono);font-size:.9em;background:var(--chip);padding:1px 5px;border-radius:5px;color:var(--tx)}
 .nores{padding:30px;text-align:center;color:var(--tx3);font-size:14px;display:none}
 footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--bd);color:var(--tx3);font-size:12.5px}
+/* ---------- mobile ---------- */
+@media (max-width:620px){
+  .wrap{padding:0 13px 70px}
+  .top-in{padding-left:13px;padding-right:13px;gap:7px}
+  .brand p{display:none}
+  .btn{padding:7px 10px;font-size:12.5px}
+  .search input{width:100%;max-width:none}
+  .search{flex:1 1 100%;order:5}
+  .hero{padding:20px 0 4px}
+  .hero .sub{font-size:14px}
+  .stat{padding:8px 12px}
+  .stat b{font-size:17px}
+  .sechead h4{font-size:18px}
+  .q{padding:13px}
+  .qt{font-size:15px}
+  ol.opts li{font-size:14px;padding:9px 11px;flex-wrap:wrap}
+  .tick{margin-left:auto;padding-top:2px}
+  .ex p{font-size:14px}
+  .pager .btn{padding:9px 11px;font-size:12.5px}
+}
 @media print{
   header.top,.tabswrap,.note,.stats,.search,.btn,.pager,.srchnote{display:none !important}
   body{background:#fff;color:#000;font-size:11pt}
