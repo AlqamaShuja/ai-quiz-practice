@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Practice Quiz — Solved</title>
+<style>
+:root{
+  --bg:#f5f6f8; --bg2:#eceef2; --card:#ffffff; --card2:#f8f9fb;
+  --tx:#13171c; --tx2:#4a5560; --tx3:#6b7682;
+  --bd:#dfe3e8; --bd2:#eceef1;
+  --acc:#4f46e5; --acc-s:#eef0ff;
+  --ok:#157f3c; --ok-bg:#e7f7ec; --ok-bd:#9ad8b0;
+  --chip:#eef0f4;
+  --shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.04);
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0c0f14; --bg2:#121722; --card:#151a22; --card2:#1a212b;
+    --tx:#e8eef6; --tx2:#a7b4c4; --tx3:#7d8b9c;
+    --bd:#252d3a; --bd2:#1f2630;
+    --acc:#8b87ff; --acc-s:#1d1f3a;
+    --ok:#4ad07e; --ok-bg:#10281b; --ok-bd:#2b6b45;
+    --chip:#1e2531;
+    --shadow:0 1px 2px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0c0f14; --bg2:#121722; --card:#151a22; --card2:#1a212b;
+  --tx:#e8eef6; --tx2:#a7b4c4; --tx3:#7d8b9c;
+  --bd:#252d3a; --bd2:#1f2630;
+  --acc:#8b87ff; --acc-s:#1d1f3a;
+  --ok:#4ad07e; --ok-bg:#10281b; --ok-bd:#2b6b45;
+  --chip:#1e2531;
+  --shadow:0 1px 2px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:92px}
+body{
+  margin:0;background:var(--bg);color:var(--tx);
+  font:16px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+sup{font-size:.68em;line-height:0}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px 80px}
+header.top{
+  position:sticky;top:0;z-index:50;background:var(--bg);
+  border-bottom:1px solid var(--bd);
+}
+.top-in{max-width:1180px;margin:0 auto;padding:10px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;margin-right:auto;min-width:0}
+.logo{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--acc),#06b6d4);
+  display:grid;place-items:center;color:#fff;font-weight:700;font-size:14px;flex:none}
+.brand h1{margin:0;font-size:15px;font-weight:650;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand p{margin:0;font-size:12px;color:var(--tx3)}
+.btn{
+  border:1px solid var(--bd);background:var(--card);color:var(--tx2);cursor:pointer;
+  border-radius:9px;padding:7px 12px;font-size:13px;font-weight:550;font-family:inherit;
+  display:inline-flex;align-items:center;gap:6px;white-space:nowrap;
+}
+.btn:hover{border-color:var(--acc);color:var(--tx)}
+.btn.on{background:var(--acc-s);border-color:var(--acc);color:var(--acc)}
+a.btn{text-decoration:none}
+a.prac-link{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:650}
+a.prac-link:hover{color:#fff;filter:brightness(1.08)}
+.search{position:relative}
+.search input{
+  width:200px;max-width:44vw;padding:8px 12px 8px 32px;border-radius:9px;border:1px solid var(--bd);
+  background:var(--card);color:var(--tx);font-size:13px;font-family:inherit;
+}
+.search input:focus{outline:2px solid var(--acc);outline-offset:-1px;border-color:var(--acc)}
+.search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--tx3)}
+.hero{padding:32px 0 8px}
+.hero h2{margin:0 0 6px;font-size:clamp(22px,4.4vw,33px);line-height:1.2;letter-spacing:-.025em;font-weight:720}
+.hero .sub{margin:0;color:var(--tx2);font-size:15px;max-width:72ch}
+.stats{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 6px}
+.stat{background:var(--card);border:1px solid var(--bd);border-radius:11px;padding:10px 14px;box-shadow:var(--shadow)}
+.stat b{display:block;font-size:19px;letter-spacing:-.02em}
+.stat span{font-size:11.5px;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em}
+.note{
+  margin:18px 0 6px;background:var(--card2);border:1px solid var(--bd);border-left:3px solid var(--acc);
+  border-radius:10px;padding:12px 14px;font-size:14px;color:var(--tx2)
+}
+.note b{color:var(--tx)}
+/* ---- chapter tabs ---- */
+.tabswrap{position:sticky;top:53px;z-index:40;background:var(--bg);padding-top:10px;margin-top:20px}
+@media (max-width:620px){.tabswrap{position:static}}
+.tabbar{display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--bd);scrollbar-width:thin}
+.tabbar::-webkit-scrollbar{height:5px}
+.tabbar::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+.tab{
+  flex:none;border:0;background:transparent;cursor:pointer;font-family:inherit;
+  padding:9px 13px;font-size:13.5px;font-weight:600;color:var(--tx3);border-bottom:2px solid transparent;
+  border-radius:8px 8px 0 0;white-space:nowrap
+}
+.tab:hover{color:var(--tx);background:var(--bg2)}
+.tab.active{color:var(--acc);border-bottom-color:var(--acc)}
+.pillbar{display:flex;gap:6px;flex-wrap:wrap;padding:12px 0 2px}
+.pill{
+  border:1px solid var(--bd);background:var(--card);color:var(--tx2);cursor:pointer;font-family:inherit;
+  border-radius:999px;padding:6px 13px;font-size:12.5px;font-weight:600;display:inline-flex;gap:6px;align-items:center
+}
+.pill:hover{border-color:var(--acc);color:var(--tx)}
+.pill.active{background:var(--acc);border-color:var(--acc);color:#fff}
+.pill .cnt{font-size:11px;opacity:.75;font-variant-numeric:tabular-nums}
+.srchnote{
+  margin:14px 0 0;padding:10px 13px;border-radius:10px;background:var(--acc-s);border:1px solid var(--acc);
+  font-size:13px;color:var(--tx);display:none
+}
+body.searching .srchnote{display:block}
+body.searching .tabswrap{display:none}
+.chap{margin:0 0 30px}
+.chap > h3{
+  margin:0 0 14px;font-size:13px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--acc);padding-bottom:8px;border-bottom:1px solid var(--bd)
+}
+.secwrap{display:none;margin-top:22px}
+.secwrap.active{display:block}
+body.searching .secwrap{display:block}
+body.searching .secwrap.empty{display:none}
+.sechead{margin:0 0 14px}
+.sechead .eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--acc);display:block;margin-bottom:5px}
+.sechead h4{margin:0;font-size:21px;font-weight:700;letter-spacing:-.02em}
+.sechead .meta{font-size:12.5px;color:var(--tx3);margin:5px 0 0}
+.pager{display:flex;gap:10px;align-items:center;margin:22px 0 0;padding-top:16px;border-top:1px solid var(--bd)}
+.pager .spacer{flex:1}
+.pager .btn{padding:9px 14px}
+body.searching .pager{display:none}
+.case{background:var(--card2);border:1px solid var(--bd);border-radius:12px;padding:13px 15px;margin:0 0 14px}
+.case h5{margin:0 0 6px;font-size:13px;font-weight:700;color:var(--acc);letter-spacing:.02em}
+.case p{margin:0;font-size:14px;color:var(--tx2)}
+.case ul{margin:6px 0 0;padding-left:20px;font-size:14px;color:var(--tx2)}
+.q{background:var(--card);border:1px solid var(--bd);border-radius:13px;padding:15px 16px;margin:0 0 11px;box-shadow:var(--shadow)}
+.q.hidden{display:none}
+.qh{display:flex;gap:11px;align-items:flex-start}
+.qn{flex:none;width:25px;height:25px;border-radius:7px;background:var(--chip);color:var(--tx2);
+  display:grid;place-items:center;font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:1px}
+.qt{margin:0;font-size:15.5px;font-weight:600;line-height:1.5}
+ol.opts{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:5px}
+ol.opts li{
+  display:flex;gap:9px;align-items:flex-start;padding:8px 11px;border-radius:9px;
+  border:1px solid transparent;background:var(--card2);font-size:14.5px;color:var(--tx2);line-height:1.5
+}
+ol.opts li .ltr{flex:none;font-weight:700;color:var(--tx3);font-size:13px;min-width:15px;margin-top:1px}
+ol.opts li.ok{background:var(--ok-bg);border-color:var(--ok-bd);color:var(--tx);font-weight:550}
+ol.opts li.ok .ltr{color:var(--ok)}
+.tick{flex:none;margin-left:auto;display:inline-flex;align-items:center;gap:5px;color:var(--ok);
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+.tick svg{width:15px;height:15px}
+body.practice ol.opts li.ok{background:var(--card2);border-color:transparent;color:var(--tx2);font-weight:400}
+body.practice ol.opts li.ok .ltr{color:var(--tx3)}
+body.practice .tick,body.practice .ansline{display:none}
+.ansline{margin:10px 0 0;font-size:13px;color:var(--tx3)}
+.ansline b{color:var(--ok)}
+details.exp{margin-top:11px;border:1px dashed var(--bd);border-radius:10px;background:transparent;overflow:hidden}
+details.exp[open]{background:var(--card2);border-style:solid}
+details.exp > summary{
+  cursor:pointer;list-style:none;padding:9px 12px;font-size:13px;font-weight:650;color:var(--acc);
+  display:flex;align-items:center;gap:8px;user-select:none
+}
+details.exp > summary::-webkit-details-marker{display:none}
+details.exp > summary .arw{display:inline-block;transition:transform .18s;font-size:11px;color:var(--tx3)}
+details.exp[open] > summary .arw{transform:rotate(90deg)}
+details.exp > summary:hover{color:var(--tx)}
+.expbody{padding:2px 13px 13px;border-top:1px solid var(--bd2)}
+.ex{margin:11px 0 0}
+.ex .lbl{display:block;font-size:10.5px;font-weight:750;letter-spacing:.09em;text-transform:uppercase;color:var(--tx3);margin-bottom:3px}
+.ex p{margin:0;font-size:14.5px;line-height:1.72;color:var(--tx2)}
+.ex p strong{color:var(--tx);font-weight:650}
+.ex.a .lbl{color:var(--ok)}
+code{font-family:var(--mono);font-size:.9em;background:var(--chip);padding:1px 5px;border-radius:5px;color:var(--tx)}
+.nores{padding:30px;text-align:center;color:var(--tx3);font-size:14px;display:none}
+footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--bd);color:var(--tx3);font-size:12.5px}
+@media print{
+  header.top,.tabswrap,.note,.stats,.search,.btn,.pager,.srchnote{display:none !important}
+  body{background:#fff;color:#000;font-size:11pt}
+  .secwrap{display:block !important;page-break-before:always}
+  .secwrap:first-of-type{page-break-before:auto}
+  .q{break-inside:avoid;box-shadow:none;border-color:#ccc}
+  details.exp{break-inside:avoid}
+  ol.opts li.ok{background:#e7f7ec !important;border-color:#9ad8b0 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .tick{color:#157f3c !important}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <div class="brand">
+      <div class="logo">AI</div>
+      <div>
+        <h1>AI: A Modern Approach &mdash; Practice Quiz (Solved)</h1>
+        <p>100 MCQs &middot; Sahi jawab highlighted &middot; Roman Urdu tashreeh</p>
+      </div>
+    </div>
+    <div class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <input id="q-search" type="search" placeholder="Search sawal / keyword&hellip;" autocomplete="off">
+    </div>
+    <button class="btn" id="btn-expand" title="Saari tashreeh kholein">Expand all</button>
+    <a class="btn prac-link" href="AI-Quiz-Practice.html" target="_blank" rel="noopener" title="Naye tab mein practice quiz kholein">&#9654; Practice Mode (naya tab)</a>
+    <button class="btn" id="btn-theme" title="Light / Dark theme"><span id="theme-ico">&#9728;</span><span id="theme-txt">Light</span></button>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="hero">
+    <h2>Artificial Intelligence: A Modern Approach (4th Edition)</h2>
+    <p class="sub">Comprehensive Practice Quiz &mdash; Chapters 1.1&ndash;1.5, 2.1&ndash;2.4, 3.1&ndash;3.6, 4.1&ndash;4.2, 5.1&ndash;5.5. Har sawal original PDF ke mutabiq bilkul waisa hi rakha gaya hai; sahi jawab <b style="color:var(--ok)">green</b> highlight hai, aur neeche "Samajhne ke liye" wala collapsible khol kar Roman Urdu mein sawal aur jawab dono ki wazahat parh sakte hain.</p>
+    <div class="stats">
+      <div class="stat"><b>100</b><span>Questions</span></div>
+      <div class="stat"><b>5</b><span>Chapters</span></div>
+      <div class="stat"><b>20</b><span>Sections</span></div>
+      <div class="stat"><b>4</b><span>Case studies</span></div>
+    </div>
+  </section>
+
+  <div class="tabswrap">
+    <div class="tabbar" id="chaptabs" role="tablist"></div>
+    <div class="pillbar" id="secpills"></div>
+  </div>
+  <div class="srchnote" id="srchnote"></div>
+
+  <main id="main"><div class="nores" id="nores">Koi sawal match nahi hua.</div></main>
+
+  <div class="pager" id="pager">
+    <button class="btn" id="btn-prev">&larr; Pichla section</button>
+    <span class="spacer"></span>
+    <button class="btn" id="btn-next">Agla section &rarr;</button>
+  </div>
+
+  <footer>
+    Source: <b>AI - Comprehensive Practice Quiz.pdf</b> (Russell &amp; Norvig, <i>Artificial Intelligence: A Modern Approach</i>, 4th ed.) &middot; Sahi jawab + Roman Urdu tashreeh ke sath.
+  </footer>
+</div>
+
+<script>
+const DATA = [
+{ch:"Chapter 1: Introduction (1.1 – 1.5)", secs:[
+
+{key:"Ch 1.1", title:"Section 1.1: What Is AI?", items:[
+ {n:1,q:"Which dimension correctly categorizes the Turing test approach to defining artificial intelligence?",
+  o:["Thinking humanly","Acting humanly","Thinking rationally","Acting rationally"],a:1,
+  qx:"Sawal yeh poochh raha hai ke Turing test AI ki 4 definitions (thinking humanly, acting humanly, thinking rationally, acting rationally) mein se kis khaane mein aata hai.",
+  ax:"<strong>Acting humanly</strong> — Turing test sirf yeh dekhta hai ke machine ka <em>behaviour</em> (jawab dena, baat karna) insaan jaisa lagta hai ya nahi. Machine ke andar kya chal raha hai, woh kaise soch rahi hai, is se koi matlab nahi. Isi liye yeh “acting” (amal) wali category hai, “thinking” wali nahi. Thinking humanly = cognitive modeling, thinking rationally = logic/syllogism, acting rationally = rational agent."},
+ {n:2,q:"What is the main distinction between machine learning and artificial intelligence as noted in the text?",
+  o:["Machine learning is synonymous with AI.","Machine learning is a subfield of AI focused on improving performance based on experience.","Machine learning deals only with logical inference.","AI only uses deep learning methods."],a:1,
+  qx:"Yahan poochha gaya hai ke ML aur AI ka aapas mein kya rishta hai — dono aik hi cheez hain ya aik doosre ka hissa?",
+  ax:"<strong>ML, AI ka aik sub-field hai</strong>. AI aik bara daira hai (search, logic, planning, knowledge representation, robotics sab shaamil). ML us daire ka woh hissa hai jo <em>tajurbe (data/experience) se seekh kar performance behtar karne</em> par focus karta hai. Deep learning phir ML ka hissa hai — yani: AI &gt; ML &gt; Deep Learning."},
+ {n:3,q:"Which capability is required for a system to pass the Total Turing Test, but NOT the standard Turing test?",
+  o:["Natural language processing","Computer vision and robotics","Machine learning","Automated reasoning"],a:1,
+  qx:"Standard Turing test aur Total Turing Test mein farq poochha ja raha hai — Total version mein aisi kaun si extra qabiliyat chahiye?",
+  ax:"<strong>Computer vision aur robotics</strong>. Standard Turing test sirf teletype (text) par hota hai, to us mein NLP, knowledge, reasoning aur learning kaafi hain. Total Turing Test mein video signal bhi shamil hota hai aur physical objects bhi pass karne hote hain — is liye machine ko <em>dekhna</em> (vision) aur <em>cheezein pakarna/hilana</em> (robotics) bhi aana chahiye."},
+ {n:4,q:"The cognitive modeling approach to AI (“thinking humanly”) relies primarily on which discipline to construct testable theories of the human mind?",
+  o:["Control theory","Cognitive science","Rationalist philosophy","Operations research"],a:1,
+  qx:"“Thinking humanly” approach ko theory banane ke liye kis ilm ki madad chahiye hoti hai?",
+  ax:"<strong>Cognitive science</strong>. Is approach mein pehle maaloom karna parta hai ke insaan asal mein sochta kaise hai (introspection, psychological experiments, brain imaging), phir us model ko computer program ki soorat mein test kiya jata hai. Cognitive science = AI + psychology ka milap, jo human mind ki testable theories banata hai. Control theory aur operations research alag disciplines hain (continuous control aur optimization ke liye)."},
+ {n:5,q:"Aristotle’s syllogisms belong to which approach to defining AI?",
+  o:["Acting humanly","Thinking humanly","Thinking rationally","Acting rationally"],a:2,
+  qx:"Aristotle ke syllogisms (jaise: Socrates insaan hai; sab insaan fani hain; to Socrates fani hai) AI ki kis definition se taalluq rakhte hain?",
+  ax:"<strong>Thinking rationally</strong>. Syllogism “laws of thought” hai — yani sochne ke aise formal, logical qawaneen jo hamesha sahi nateeja dete hain. Yeh soch ke <em>tareeqe</em> (process) par baat karta hai aur woh bhi durust/logical hone par, is liye “thinking rationally”. Insaan jaisi soch (thinking humanly) nahi, kyunke insaan hamesha logic se nahi sochta."},
+ {n:6,q:"What is a key advantage of the rational agent approach over the “laws of thought” approach?",
+  o:["It requires human-like thought processes.","It relies purely on formal logic without probability.","It is more general because correct inference is only one of several ways to achieve rationality.","It eliminates the need for computational complexity analysis."],a:2,
+  qx:"Rational agent (acting rationally) approach, logic-based “laws of thought” approach se behtar kyun hai?",
+  ax:"<strong>Yeh zyada aam (general) hai</strong> — kyunke durust inference (logic se nateeja nikalna) rationality haasil karne ka sirf <em>aik</em> zariya hai, waahid zariya nahi. Kabhi logic se koi yaqeeni nateeja nikalta hi nahi (adhoori maloomat), magar phir bhi agent ko behtareen available action lena hota hai — jaise reflex se haath hatana, ya probability ke sath faisla karna. Is liye “behtareen action lena” ka pemana logic se wasee hai."},
+ {n:7,q:"What term describes the problem of ensuring that the objectives built into an AI system match the true preferences of humans?",
+  o:["Value alignment problem","Turing completeness problem","Frame problem","Limited rationality problem"],a:0,
+  qx:"Jab hum machine ko koi maqsad (objective) dete hain, to yeh yaqeeni banana ke woh maqsad waqai insaanon ki asli khwahishat se mel khaye — is masle ka naam kya hai?",
+  ax:"<strong>Value alignment problem</strong>. Machine jo objective di jaye usay literally pura karti hai; agar woh objective insaani preferences se thori si bhi mukhtalif ho to nateeja nuqsaan-deh ho sakta hai (isi ka mashhoor misal “King Midas problem” hai, dekhein 1.5). Frame problem alag hai (changing world ko represent karna), Turing completeness computation ki theory ka lafz hai."},
+]},
+
+{key:"Ch 1.2", title:"Section 1.2: The Foundations of Artificial Intelligence", items:[
+ {n:1,q:"Which philosophical position holds that the human mind is governed entirely by physical laws operating in the brain?",
+  o:["Dualism","Materialism (Physicalism)","Logicism","Deontology"],a:1,
+  qx:"Woh falsafiyana nazariya kaun sa hai jo kehta hai ke zehan poori tarah dimaagh ke physical qawaneen ke tabe hai (koi alag ruhani cheez nahi)?",
+  ax:"<strong>Materialism (Physicalism)</strong>. Is nazariye ke mutabiq dimaagh ke physical operations hi “mind” paida karte hain — yani soch bhi physics ke qanoon ke under aati hai. Isi nazariye se yeh imkaan nikalta hai ke machine bhi soch sakti hai. Iske muqable mein <em>dualism</em> kehta hai ke rooh/mind jism se alag cheez hai."},
+ {n:2,q:"Who formulated the principle of induction, proposing that general rules are acquired through repeated associations between elements?",
+  o:["René Descartes","David Hume","Immanuel Kant","Thomas Hobbes"],a:1,
+  qx:"Principle of induction — yani baar baar aik cheez ko doosri ke sath hota dekh kar aam qaida bana lena — kis philosopher ne pesh kiya?",
+  ax:"<strong>David Hume</strong>. Hume ne kaha ke hum general rules tajurbe mein baar baar nazar aane wale ta'alluq (repeated association) se seekhte hain — yeh aaj ke machine learning ki falsafiyana buniyad hai. Descartes dualism aur “cogito” ke liye jaane jate hain, Kant transcendental philosophy ke liye."},
+ {n:3,q:"Which ethical framework dictates that the morality of an action is determined by universal social rules rather than by expected outcomes?",
+  o:["Utilitarianism","Consequentialism","Deontological ethics","Expected utility theory"],a:2,
+  qx:"Kaun sa ethics ka framework kehta hai ke kaam sahi ya ghalat uske <em>nateeje</em> se nahi, balke universal qawaneen/farz se tay hota hai?",
+  ax:"<strong>Deontological ethics</strong> (Kant). Is mein kuch kaam apni zaat mein galat hain, nateeja chahe accha ho (jaise jhoot bolna). Uske muqable utilitarianism aur consequentialism nateeje dekhte hain (zyada se zyada logon ki bhalai), aur expected utility theory numbers mein nateeje ki value nikalti hai."},
+ {n:4,q:"What fundamental result, proven by Kurt Gödel in 1931, established that any formal theory as strong as Peano arithmetic contains true statements with no proof within the theory?",
+  o:["Turing machine universality","Incompleteness theorem","Church-Turing thesis","NP-completeness theorem"],a:1,
+  qx:"Gödel ne 1931 mein kya sabit kiya? Yani woh nateeja jo kehta hai ke har taqatwar formal system mein kuch aise sach bayanaat hon ge jinka us system ke andar saboot mojood nahi.",
+  ax:"<strong>Incompleteness theorem</strong>. Matlab: arithmetic jaisi taqatwar theory mein kuch sachaiyaan hain jo us theory ke qawaneen se prove nahi ki ja sakti. AI ke liye iska sabaq yeh hai ke mehez logic/computation ki bhi hadood hain. Church-Turing thesis computability ki definition hai, aur NP-completeness (Cook/Karp, 1970s) complexity ki."},
+ {n:5,q:"A problem is classified as intractable if:",
+  o:["It has no known mathematical formula.","The time required to solve instances grows exponentially with the size of the instances.","It cannot be solved on any Turing machine.","It requires continuous variables."],a:1,
+  qx:"Kis surat mein kisi masle ko “intractable” kaha jata hai?",
+  ax:"<strong>Jab input ka size barhne par hal karne ka waqt exponentially barhe</strong>. Yani masla theoretically hal ho sakta hai, lekin practically bare inputs par itna waqt lega ke bekaar hai. Dhyaan rahein: jo bilkul hal <em>nahi</em> ho sakta kisi bhi Turing machine par, usay <em>undecidable/non-computable</em> kaha jata hai — woh intractable se alag cheez hai."},
+ {n:6,q:"Herbert Simon won the Nobel Prize in Economics for demonstrating that human behavior is better modeled by which concept rather than strict utility maximization?",
+  o:["Omniscience","Satisficing","Expected payoff","Game theory"],a:1,
+  qx:"Herbert Simon ne kis concept par Nobel Prize jeeta — woh idea jo kehta hai ke insaan hamesha best cheez nahi dhoondte?",
+  ax:"<strong>Satisficing</strong> — yani “aisa faisla kar lena jo kaafi acha ho” (good enough), bajaye hisaab lagakar bilkul behtareen (maximum utility) dhoondne ke. Simon ka point yeh tha ke insaan ke paas waqt aur dimaagh ki hudood hain (bounded rationality), is liye woh hamesha optimal nahi chunta. Yeh AI mein heuristics aur approximate algorithms ki wajah banta hai."},
+ {n:7,q:"What key feature distinguished modern control theory from early AI research?",
+  o:["Control theory dealt with continuous variables using calculus/matrix algebra; AI focused on logical inference and symbolic computation.","Control theory focused on games; AI focused on physical hardware.","Control theory rejected cost functions; AI relied on optimization.","Control theory pursued human-like thought; AI focused on cybernetics."],a:0,
+  qx:"Control theory aur shuru ke AI research mein buniyadi farq kya tha?",
+  ax:"<strong>Tools aur subject ka farq</strong>: control theory <em>continuous</em> (musalsal badalte) variables ke sath kaam karti thi aur calculus/matrix algebra istemal karti thi (jaise thermostat, autopilot). Shuru ka AI <em>discrete symbols</em>, logic aur inference par chalta tha (language, planning, reasoning) — jahan calculus kaam nahi aata. Isi liye dono alag alag raaste par chale."},
+ {n:8,q:"Noam Chomsky’s famous 1957 critique of B. F. Skinner’s Verbal Behavior helped weaken behaviorism by emphasizing:",
+  o:["The importance of mechanical calculators.","The creativity of language—how children produce sentences they have never heard.","The role of reinforcement learning in rats.","The necessity of physical symbol systems."],a:1,
+  qx:"Chomsky ne Skinner ki kitab par tanqeed kar ke behaviorism ko kamzor kiya — uski daleel kya thi?",
+  ax:"<strong>Zubaan ki takhleeqi salahiyat</strong>: bachay aise jumle bol lete hain jo unhone pehle kabhi sune hi nahi. Behaviorism (stimulus → response, reward) is ko explain nahi kar sakta, kyunke bina sune jumle ka koi “reinforcement” nahi hua. Is se sabit hua ke zehan ke andar aik internal grammar/representation hoti hai — aur yahi soch cognitive science aur AI ki buniyad bani."},
+]},
+
+{key:"Ch 1.3", title:"Section 1.3: The History of Artificial Intelligence", items:[
+ {n:1,q:"Who created the first recognized model of artificial neural networks in 1943?",
+  o:["John McCarthy and Marvin Minsky","Warren McCulloch and Walter Pitts","Alan Turing and Claude Shannon","Herbert Simon and Allen Newell"],a:1,
+  qx:"1943 mein artificial neural network ka pehla model kis ne banaya?",
+  ax:"<strong>Warren McCulloch aur Walter Pitts</strong>. Unhon ne neuron ka aisa simple model diya jo on/off (0 ya 1) switch ki tarah kaam karta hai, aur dikhaya ke aise neurons ka network koi bhi computable function compute kar sakta hai. McCarthy aur Minsky baad mein (1956 Dartmouth) AI field qaim karne mein numayan rahe."},
+ {n:2,q:"In which year was the famous Dartmouth workshop held where the term “Artificial Intelligence” was officially adopted?",
+  o:["1943","1950","1956","1969"],a:2,
+  qx:"Dartmouth workshop — jahan “Artificial Intelligence” naam officially apnaya gaya — kis saal hui?",
+  ax:"<strong>1956</strong>. John McCarthy ne yeh 2-mahine ka workshop Dartmouth College mein rakha aur “Artificial Intelligence” naam diya. Yaad rakhne ke liye: 1943 = McCulloch-Pitts neuron, 1950 = Turing ka “Computing Machinery and Intelligence” paper, 1956 = AI naam ki paidaish, 1969 = Minsky-Papert ki <em>Perceptrons</em> aur DENDRAL."},
+ {n:3,q:"What was the core hypothesis formulated by Newell and Simon stating that manipulating data structures composed of symbols is necessary and sufficient for general intelligent action?",
+  o:["Standard Model Hypothesis","Physical Symbol System Hypothesis","Connectionist Hypothesis","Bounded Rationality Hypothesis"],a:1,
+  qx:"Newell aur Simon ka woh dawa jo kehta hai: symbols ko toar-mor karna hi intelligence ke liye zaroori aur kaafi hai — uska naam?",
+  ax:"<strong>Physical Symbol System Hypothesis</strong>. Dawa yeh hai ke koi bhi system jo symbols (nishaniyan) ki structures ko qawaneen ke tahat manipulate kar sake, woh general intelligent behaviour dikha sakta hai — aur intelligence ke liye aisa symbol system hona zaroori bhi hai. Yeh classical/symbolic AI ki buniyad hai; connectionism (neural nets) iska muqabil nazariya hai."},
+ {n:4,q:"Why did many early AI systems (1950s-1960s) fail when applied to larger, real-world problems?",
+  o:["They lacked proper programming languages.","They suffered from combinatorial explosion and could not scale up search space exploration.","They relied heavily on deep learning instead of logic.","Computers were not capable of symbolic processing."],a:1,
+  qx:"Shuru ke AI programs chhoti “toy” problems par chal jate the magar bare asli masail par fail kyun ho gaye?",
+  ax:"<strong>Combinatorial explosion</strong> — masla bara hote hi mumkin combinations/raaste exponentially barh jate hain, aur search space itna phail jata hai ke computer ke paas waqt/memory khatam. Shuru ke programs ke paas sirf general-purpose search thi, domain ka ilm (knowledge) nahi, is liye woh bari search ko kaat (prune) nahi sakte the. Isi se aage expert systems (knowledge-based AI) ka daur shuru hua."},
+ {n:5,q:"What made the DENDRAL program (1969) a major milestone in AI history?",
+  o:["It was the first program to use deep learning.","It was the first successful knowledge-intensive “expert system,” deriving expertise from domain-specific rules.","It passed the Turing test.","It solved the 8-puzzle using A* search."],a:1,
+  qx:"DENDRAL program ki AI history mein ahmiyat kya thi?",
+  ax:"<strong>Yeh pehla kaamyab “expert system” tha</strong> — mass spectrometry ke data se molecule ka structure nikalta tha, aur iski taqat general search nahi balke chemistry ke <em>domain-specific rules</em> (mahireen ka ilm) thay. Isne AI ko sabaq diya: “knowledge is power” — aam purpose search ke muqable khaas maidan ka ilm zyada kaam deta hai. Isi se MYCIN jaise expert systems aur 1980s ki AI industry nikli."},
+ {n:6,q:"What major methodological shift occurred in AI during the late 1980s and 1990s?",
+  o:["A return to pure rule-based expert systems.","A shift from Boolean logic to probability, machine learning, and rigorous experimental benchmarks.","A complete abandonment of neural networks.","A focus on hand-crafted knowledge engineering over data."],a:1,
+  qx:"1980s ke aakhir aur 1990s mein AI ke tareeqa-e-kaar mein kaun si bari tabdeeli aayi?",
+  ax:"<strong>Logic se probability aur machine learning ki taraf</strong>, sath hi sakht <em>scientific/experimental</em> rawaiyya: shared benchmark datasets par results dikhana, statistics aur probability theory (Bayesian networks, HMMs) ka istemal, aur hypotheses ko numbers se sabit karna. Pehle AI zyada “mera program chal gaya” type dawe par tha; ab “data par measure kar ke dikhao” ka daur aaya."},
+ {n:7,q:"The term “Deep Learning” refers to machine learning models using:",
+  o:["A single layer of perceptrons with exact logic rules.","Multiple layers of simple, adjustable computing elements (neural networks).","Purely symbolic first-order logic provers.","Unsupervised decision trees with single splits."],a:1,
+  qx:"“Deep Learning” ki definition poochhi ja rahi hai — “deep” ka matlab kya hai?",
+  ax:"<strong>Kayi (multiple) layers</strong> aise simple computing units ki jin ke weights adjust hote hain — yani neural networks jin mein input se output tak kayi tehain (layers) hoti hain. “Deep” ka matlab layers ki tadaad hai, na ke koi gehra falsafa. Har layer pichli layer se zyada abstract features banati hai (edges → shapes → chehre)."},
+]},
+
+{key:"Ch 1.4", title:"Section 1.4: The State of the Art", items:[
+ {n:1,q:"Which milestone was achieved by DeepMind’s AlphaZero program in board games?",
+  o:["It defeated Garry Kasparov by using a massive library of human grandmaster games.","It learned through self-play alone—without human game data—to beat top programs at Go, chess, and shogi.","It relied strictly on hand-crafted heuristic evaluation functions.","It used first-order logic resolution to prove game outcomes."],a:1,
+  qx:"AlphaZero ne board games mein kya karnama kiya?",
+  ax:"<strong>Sirf self-play se seekha</strong> — insaani games ka data ya insaan ki likhi strategy ke baghair, khud apne khilaf khel kar, aur phir Go, chess aur shogi teenon mein duniya ke behtareen programs ko haraya. Kasparov ko <em>Deep Blue</em> (IBM, 1997) ne haraya tha jo human games library aur hand-crafted evaluation par chalta tha — yahi option A ka dhoka hai."},
+ {n:2,q:"In modern speech recognition and computer vision tasks, AI systems have achieved accuracy that:",
+  o:["Lags far behind 1990s baselines.","Meets or exceeds human-level performance on specific benchmark datasets.","Requires manual feature extraction for every domain.","Operates entirely without computational GPUs."],a:1,
+  qx:"Aaj ke speech recognition aur computer vision systems ki accuracy kis level par hai?",
+  ax:"<strong>Khaas benchmark datasets par insaan ke barabar ya us se behtar</strong>. Dhyaan rahein: yeh “specific benchmarks” par hai (jaise ImageNet), har asli duniya ki surat-e-haal mein nahi — lekin un tests par machines insaani accuracy ko chhoo ya paar kar chuki hain. Yeh deep learning + bara data + GPUs ki wajah se mumkin hua (is liye D galat hai), aur features bhi khud seekhe jate hain (C galat)."},
+]},
+
+{key:"Ch 1.5", title:"Section 1.5: Risks and Benefits of AI", items:[
+ {n:1,q:"What is the “Gorilla Problem” as articulated in the context of AI risk?",
+  o:["The failure of vision models to recognize primates in images.","The risk that humans might lose control over their future if they build superintelligent machines, just as gorillas lack control over theirs relative to humans.","The inability of robots to move naturally like animals.","The computational inefficiency of deep reinforcement learning."],a:1,
+  qx:"AI risk ke silsile mein “Gorilla Problem” ka matlab kya hai?",
+  ax:"<strong>Control kho dene ka khatra</strong>: jaise gorillas ke paas apne mustaqbil ka control nahi raha kyunke insaan un se zyada zaheen nikla, waise hi agar insaan apne se zyada zaheen (superintelligent) machine bana le to insaan apne mustaqbil ka control kho sakta hai. Yeh image recognition ki koi bug nahi — yeh aik long-term safety ka sawaal hai."},
+ {n:2,q:"The “King Midas Problem” in AI safety illustrates:",
+  o:["The financial cost of building supercomputers.","The danger of giving an AI a fixed objective that it pursues literally, leading to unintended and harmful side effects.","The problem of hardware degradation over time.","The failure of AI systems to generate real monetary wealth."],a:1,
+  qx:"“King Midas Problem” kis khatre ki misaal hai?",
+  ax:"<strong>Ghalat ya adhoora objective dene ka khatra</strong>. King Midas ne maanga ke jo cheez chhoon, sona ban jaye — aur phir uska khana aur beti bhi sona ban gayi. Isi tarah machine ko agar aik fixed objective de diya jaye to woh usay <em>lafz-ba-lafz</em> pura karegi, chahe nateeje mein hamara asli maqsad barbaad ho jaye. Isi liye value alignment (1.1 Q7) aur uncertain objectives ki baat ki jati hai."},
+]},
+]},
+
+{ch:"Chapter 2: Intelligent Agents (2.1 – 2.4)", secs:[
+
+{key:"Ch 2.1", title:"Section 2.1: Agents and Environments", items:[
+ {n:1,q:"Mathematically, an agent function maps any given _____ to an action.",
+  o:["Current state","Percept sequence","Single percept","Utility value"],a:1,
+  qx:"Agent function riyazi taur par kis cheez ko action par map karta hai?",
+  ax:"<strong>Percept sequence</strong> — yani ab tak jo kuch bhi agent ne dekha/sunaa hai, poori history. Agent ke paas environment ki asli “state” ka ilm nahi hota, uske paas sirf percepts hote hain; aur action ka faisla poori history par ho sakta hai, sirf aakhri percept par nahi. Is liye: <code>f : P* → A</code>. Sirf current percept par chalna <em>simple reflex agent</em> ki khaas soorat hai, general definition nahi."},
+ {n:2,q:"What is the distinction between an agent function and an agent program?",
+  o:["The agent function is a concrete code file; the agent program is a mathematical abstraction.","The agent function is an abstract mathematical description; the agent program is a concrete implementation running on physical architecture.","The agent function accepts only single percepts; the agent program accepts full histories.","There is no distinction; the terms are synonymous."],a:1,
+  qx:"Agent function aur agent program mein farq kya hai?",
+  ax:"<strong>Function = riyazi (abstract) tasawwur, program = asli code</strong> jo kisi machine (architecture) par chalta hai. Function kehta hai “is percept history par yeh action” — aik mathematical mapping. Program woh amali implementation hai jo us mapping ko kisi tarah (table, rules, search) compute karta hai. Agent = architecture + program."},
+ {type:"case",title:"Case Study 1: Simple Vacuum World",
+  body:"Consider a standard 2-location vacuum world (Location A and Location B). The agent senses [Location, Status]. Available actions are Left, Right, Suck, and NoOp.",span:2},
+ {n:3,q:"If the agent’s percept sequence is [A, Clean], [A, Dirty], what action should a rational vacuum agent choose according to the standard simple reflex function?",
+  o:["Left","Right","Suck","NoOp"],a:2,
+  qx:"Vacuum agent ne pehle [A, Clean] dekha, phir [A, Dirty]. Ab usay kya karna chahiye?",
+  ax:"<strong>Suck</strong>. Simple reflex rule bilkul seedha hai: agar maujooda khaana <em>Dirty</em> hai to <code>Suck</code>; agar Clean hai to doosri jagah chale jao (A par ho to Right, B par ho to Left). Aakhri percept [A, Dirty] hai — yani abhi gandh maujood hai — to safai karna hi rational hai. Pichla [A, Clean] ab maayne nahi rakhta."},
+ {n:4,q:"If an agent starts at [A, Clean] in a deterministic 2-location world, takes action Right, and perceives [B, Clean], what is the minimum total number of steps it has taken so far?",
+  o:["0","1","2","3"],a:1,
+  qx:"Agent [A, Clean] se shuru hua, aik baar Right kiya, aur ab [B, Clean] dekh raha hai. Kam az kam kitne steps (actions) hue?",
+  ax:"<strong>1</strong>. Aik hi action liya gaya: <code>Right</code>, jis se woh A se B pohoncha. Shuruati percept lene ko step nahi ginte — step sirf action hota hai. Deterministic world hai, is liye aik Right = aik hi jagah ki tabdeeli, koi extra move zaroori nahi."},
+]},
+
+{key:"Ch 2.2", title:"Section 2.2: Good Behavior: The Concept of Rationality", items:[
+ {n:1,q:"What evaluates how desirable a sequence of environment states is?",
+  o:["Agent program","Performance measure","Percept history","State space table"],a:1,
+  qx:"Woh kaun si cheez batati hai ke environment ki states ka silsila kitna acha/pasandeeda hai?",
+  ax:"<strong>Performance measure</strong>. Yeh bahar se (designer ki taraf se) diya gaya pemana hota hai jo agent ki kaamyabi naapta hai — jaise vacuum world mein “kitni dirt saaf hui kitne waqt mein”. Aham baat: performance measure <em>environment ki states</em> ko judge karta hai, agent ki apni raaye ko nahi (warna agent khud ko hi 100% de deta)."},
+ {n:2,q:"Rationality at any given time depends on four things EXCEPT:",
+  o:["The performance measure defining success.","The agent’s prior knowledge of the environment.","The actual outcome after the fact in all cases (omniscience).","The agent’s percept sequence to date."],a:2,
+  qx:"Rationality 4 cheezon par depend karti hai — yeh sawal poochh raha hai ke kaun si cheez un mein shaamil <em>nahi</em> hai (EXCEPT wala sawal hai).",
+  ax:"<strong>Asli nateeja pehle se jaan lena (omniscience)</strong> rationality ki shart nahi hai. Rationality ka faisla in 4 par hota hai: (1) performance measure, (2) environment ka pehle se ilm, (3) mumkin actions, (4) ab tak ka percept sequence. Rational hona ka matlab “jo maloom hai uski roshni mein expected performance ko max karna” hai — “hamesha best nateeja aana” nahi, kyunke qismat/adhoori maloomat agent ke haath mein nahi."},
+ {n:3,q:"An agent is considered autonomous to the extent that:",
+  o:["It relies on the prior knowledge of its designer.","It relies on its own learning and percepts rather than built-in assumptions.","It contains no internal state variables.","It ignores sensor readings."],a:1,
+  qx:"Agent ko “autonomous” kis bunyad par kaha jata hai?",
+  ax:"<strong>Jitna woh apne percepts aur apni seekhi hui cheezon par chalta hai, utna autonomous hai</strong> — aur jitna designer ki pehle se bhari hui assumptions par, utna kam. Autonomy ka darja hota hai: shuru mein agent designer ke ilm par chalta hai, phir tajurbe se seekh kar us par apni samajh ghalib karta hai (jaise seekhne wala vacuum robot jo naye ghar ka naqsha khud bana le)."},
+ {n:4,q:"Actions taken specifically to gather information or modify future percepts are known as:",
+  o:["Reflex actions","Information gathering","Autonomy actions","Satisficing steps"],a:1,
+  qx:"Woh actions jo sirf maloomat haasil karne ya aage ke percepts badalne ke liye kiye jate hain, unhein kya kehte hain?",
+  ax:"<strong>Information gathering</strong> (aur iski aik aham qism hai <em>exploration</em>). Misaal: gaari chalate waqt mor lene se pehle aankh se sarak dekhna, ya robot ka camera ghumana — in se foran koi maqsad pura nahi hota, magar aage behtar faisle ke liye percept behtar ho jate hain. Rational agent ke liye aise actions lena bhi rationality ka hissa hai."},
+]},
+
+{key:"Ch 2.3", title:"Section 2.3: The Nature of Environments", items:[
+ {n:1,q:"In PEAS task environment specifications, what does the acronym PEAS stand for?",
+  o:["Program, Execution, Action, Sensor","Performance, Environment, Actuators, Sensors","Perception, Entity, Actuator, State","Problem, Environment, Agent, Solution"],a:1,
+  qx:"PEAS ka mukhtasir (acronym) kis cheez ka hai?",
+  ax:"<strong>Performance measure, Environment, Actuators, Sensors</strong>. Jab bhi koi agent design karna ho to pehle yeh 4 cheezein likhi jati hain. Misaal (self-driving taxi): Performance = safety, speed, profit; Environment = roads, traffic, passengers; Actuators = steering, brake, accelerator, horn; Sensors = cameras, GPS, speedometer, radar."},
+ {n:2,q:"A task environment is fully observable if:",
+  o:["The agent has complete memory of all past actions.","The agent’s sensors give access to the complete state of the environment at each point in time relevant to action choice.","The environment is deterministic and static.","Multiple agents share sensory inputs."],a:1,
+  qx:"Kisi environment ko “fully observable” kab kaha jata hai?",
+  ax:"<strong>Jab sensors har waqt environment ki poori (faisle ke liye zaroori) state de dein</strong>. Aham nukta: poori state ka matlab har zarra nahi, balke <em>jo faisle se mutalliq hai</em> woh sab. Agar sensors adhoori maloomat dein (jaise vacuum robot ko doosre kamre ki dirt nazar na aaye) to woh <em>partially observable</em> hai, aur phir agent ko internal state (memory) rakhni parti hai. Memory hona observability nahi hai — is liye A galat hai."},
+ {n:3,q:"Playing a game of Chess is an example of an environment that is:",
+  o:["Partially observable, stochastic, continuous","Fully observable, competitive multiagent, discrete","Unobservable, single-agent, dynamic","Episodic, continuous, non-deterministic"],a:1,
+  qx:"Chess ka environment kis qism ka hai — yeh sawal uski properties classify karne ka hai.",
+  ax:"<strong>Fully observable, competitive multiagent, discrete</strong>. Board poora saamne hai (fully observable), doosra khilari hai jo aapke khilaf hai (competitive multiagent), aur chaalein/positions ginti mein alag alag hain (discrete). Yeh deterministic bhi hai (chaal ka nateeja tay hai) aur sequential (ab ki chaal aage asar dalti hai) — is liye stochastic/continuous/episodic wale options fit nahi hote."},
+ {n:4,q:"If the next state of the environment is completely determined by the current state and the action executed by the agent, the environment is:",
+  o:["Stochastic","Deterministic","Episodic","Dynamic"],a:1,
+  qx:"Agar agli state sirf maujooda state aur liye gaye action se poori tarah tay ho jaye, to environment kya kehlayega?",
+  ax:"<strong>Deterministic</strong> — koi ittefaq (randomness) nahi, aik hi state + aik hi action = hamesha wohi nateeja. Agar nateeje mein randomness ho to <em>stochastic</em>. (Episodic/sequential alag paimana hai — iska ta'alluq is baat se hai ke faisle aage par asar dalte hain ya nahi; dynamic ka ta'alluq waqt ke sath environment badalne se hai.)"},
+ {n:5,q:"An assembly line part-picking robot whose current decision does NOT depend on past actions or affect future actions operates in an environment that is:",
+  o:["Sequential","Episodic","Continuous","Dynamic"],a:1,
+  qx:"Assembly line par parts uthane wala robot — jiska har faisla alag aur mustaqil hai — kis qism ke environment mein kaam karta hai?",
+  ax:"<strong>Episodic</strong>. Har part aik alag “episode” hai: robot dekhta hai, decide karta hai (accha part hai ya kharab), aur agla part uss faisle se mutasir nahi hota. Iske muqable <em>sequential</em> environment mein (jaise chess ya driving) ab ka faisla aage ke tamam faislon par asar dalta hai."},
+ {n:6,q:"An environment is dynamic if:",
+  o:["It changes while the agent is deliberating.","It has an infinite number of states.","Actions are continuous variables.","The performance score changes but the physical world remains unchanged."],a:0,
+  qx:"“Dynamic” environment ki pehchan kya hai?",
+  ax:"<strong>Woh agent ke sochne ke doran bhi badalta rehta hai</strong> — yani waqt ruk nahi'ta, jaise taxi driving (sarak par gaariyan chalti rehti hain chahe aap soch rahe hon). Agar environment agent ke sochne tak wahi rahe to woh <em>static</em> hai (jaise crossword puzzle). Aik darmiyani qism <em>semidynamic</em> hai: duniya nahi badalti magar performance score (clock) chalta rehta hai — jaise chess with a clock; isi liye option D semidynamic ki tareef hai, dynamic ki nahi."},
+]},
+
+{key:"Ch 2.4", title:"Section 2.4: The Structure of Agents", items:[
+ {n:1,q:"Why is a purely table-driven agent program computationally infeasible for complex environments?",
+  o:["Lookup tables cannot be written in pseudocode.","The size of the lookup table required grows exponentially with the length of the percept sequence, making memory requirements astronomical.","Table lookup cannot handle deterministic actions.","Sensors cannot write to memory tables."],a:1,
+  qx:"Sirf lookup table par chalne wala agent program bare environments mein kyun na-mumkin hai?",
+  ax:"<strong>Table ka size percept history ke sath exponentially barhta hai</strong>. Har mumkin percept sequence ke liye aik entry chahiye, to entries hoti hain <code>Σ |P|<sup>t</sup></code> — jaise chess ke liye 10<sup>150</sup> se zyada entries, jo kaynaat ke atoms se bhi zyada hain. Is liye asli agents table ki jagah <em>rules, models ya search</em> istemal karte hain jo kam jagah mein wahi kaam karte hain."},
+ {n:2,q:"A simple reflex agent selects actions based on:",
+  o:["The entire percept history.","The current percept only, using condition-action rules.","Internal model-based predictions of future states.","Utility maximization calculations."],a:1,
+  qx:"Simple reflex agent action kis buniyad par chunta hai?",
+  ax:"<strong>Sirf maujooda percept par</strong>, <code>if condition then action</code> qism ke rules se (jaise “agar aagay wali gaari ki brake light jal gayi to brake lagao”). Yeh bohat tez aur simple hai, magar history yaad nahi rakhta — is liye partially observable duniya mein phans jata hai (jaise vacuum agent ko pata hi nahi doosri jagah saaf hai ya nahi, to woh infinite loop mein ghoom sakta hai)."},
+ {n:3,q:"What component must a model-based reflex agent maintain to handle partial observability?",
+  o:["A heuristic lookup table","An internal state reflecting unobserved aspects of the current state, updated via transition and sensor models","A complete tree of all future goal paths","A random number generator"],a:1,
+  qx:"Model-based reflex agent ko adhoori maloomat (partial observability) se nibatne ke liye kya rakhna parta hai?",
+  ax:"<strong>Internal state</strong> — yani duniya ki aik andaruni tasweer, jo un hisson ko bhi track karti hai jo abhi nazar nahi aa rahe. Isay do models se update kiya jata hai: <em>transition model</em> (mere action aur duniya ke qawaneen se duniya kaise badlegi) aur <em>sensor model</em> (duniya ki state se mere percepts kaise bante hain). Misaal: driver ko yaad hai ke peeche wali lane mein gaari thi, chahe is waqt mirror mein na dikhe."},
+ {n:4,q:"Which agent architecture evaluates different world states using an internalized measure of preference to make tradeoffs between conflicting goals or under uncertainty?",
+  o:["Goal-based agent","Utility-based agent","Simple reflex agent","Table-driven agent"],a:1,
+  qx:"Kaun sa agent apne andar “kitna pasandeeda” ka pemana rakh kar mukhtalif goals ke darmiyan trade-off karta hai?",
+  ax:"<strong>Utility-based agent</strong>. Goal-based agent sirf binary dekhta hai: goal mila ya nahi. Utility-based agent har state ko aik number (utility) deta hai, is liye woh keh sakta hai “yeh raasta thora slow magar bohat safe hai” — yani speed vs safety jaisa trade-off kar sakta hai, aur uncertainty mein <em>expected utility</em> maximize karta hai."},
+ {n:5,q:"In a general learning agent, which component is responsible for suggesting exploratory, potentially suboptimal actions to acquire new informative experiences?",
+  o:["Critic","Performance element","Problem generator","Learning element"],a:2,
+  qx:"Learning agent ke 4 hisson mein se kaun sa hissa naye tajurbe ke liye “shayad behtar nahi” wale naye actions tajweez karta hai?",
+  ax:"<strong>Problem generator</strong>. Learning agent ke 4 purze: <em>performance element</em> (abhi jo behtar lagta hai woh action chunta hai), <em>critic</em> (performance standard se feedback deta hai ke kaisa chala), <em>learning element</em> (critic ke feedback se performance element ko behtar karta hai), aur <em>problem generator</em> (jaan boojh kar naye/experimental actions tajweez karta hai taake naya ilm mile). Bina exploration ke agent apni hi purani aadaton mein phansa rehta hai."},
+ {n:6,q:"A representation where each state of the world is treated as an indivisible “black box” with no internal structure is called:",
+  o:["Factored representation","Structured representation","Atomic representation","Distributed representation"],a:2,
+  qx:"Woh representation jis mein har state aik na-qabil-e-taqseem “black box” hoti hai (andar koi tafseel nahi) — uska naam?",
+  ax:"<strong>Atomic representation</strong>. State ke bare mein sirf yeh pata hota hai ke woh doosri state ke barabar hai ya nahi (jaise Romania ke naqshe mein sirf shehar ka naam: “Arad”, “Sibiu”). Iske muqable: <em>factored</em> = state kayi variables/attributes ka majmua (jaise GPS + fuel + oil), aur <em>structured</em> = objects aur un ke ta'alluqat."},
+ {n:7,q:"In which type of state representation is a state composed of explicit objects and their relations to one another?",
+  o:["Atomic","Factored","Structured","Localist"],a:2,
+  qx:"Kaun si state representation mein state alag alag objects aur un ke darmiyan ta'alluqat se banti hai?",
+  ax:"<strong>Structured representation</strong>. Is mein hum keh sakte hain: “yeh truck hai, is ke andar gaaye hai, aur yeh farm par khari hai” — objects + relations. Yeh sab se taqatwar level hai (first-order logic, knowledge-based systems, natural language is par chalte hain). Teenon ki tarteeb barhti taqat ke sath: atomic → factored → structured."},
+]},
+]},
+{ch:"Chapter 3: Solving Problems by Searching (3.1 – 3.6)", secs:[
+
+{key:"Ch 3.1", title:"Section 3.1: Problem-Solving Agents", items:[
+ {n:1,q:"A problem-solving agent operates on which type of state representation?",
+  o:["Structured","Factored","Atomic","Neural"],a:2,
+  qx:"Problem-solving agent (jo search karta hai) kis qism ki state representation par kaam karta hai?",
+  ax:"<strong>Atomic</strong>. Search algorithms ke liye har state aik na-qabil-e-taqseem “black box” hoti hai — jaise “Arad”, “Sibiu” — algorithm ko sirf itna dekhna hota hai ke do states barabar hain ya nahi, aur kis state se kis state par ja sakte hain. State ke andar ki tafseel (factored/structured) chapters 6+ (CSP, logic) mein aati hai."},
+ {n:2,q:"What are the four steps in the problem-solving process of a simple agent in order?",
+  o:["Search, Execution, Goal formulation, Problem formulation","Goal formulation, Problem formulation, Search, Execution","Problem formulation, Search, Goal formulation, Execution","Search, Goal formulation, Problem formulation, Execution"],a:1,
+  qx:"Problem-solving agent ke 4 marhale tarteeb se kaun se hain?",
+  ax:"<strong>Goal formulation → Problem formulation → Search → Execution</strong>. Mantiq seedha hai: pehle tay karo <em>chahiye kya</em> (goal: Bucharest pohoncha), phir usay aik formal masle mein likho (states, actions, costs), phir hal (raasta) dhoondo (search), aur aakhir mein us raaste ke actions kar dalo (execution). Jab tak goal hi tay na ho, problem likhi hi nahi ja sakti — is liye baqi tarteebain galat hain."},
+ {n:3,q:"The process of removing unnecessary detail from a state or action model is called:",
+  o:["Optimization","Abstraction","Heuristic search","Backtracking"],a:1,
+  qx:"State ya action ke model se ghair-zaroori tafseel nikaal dene ke amal ko kya kehte hain?",
+  ax:"<strong>Abstraction</strong>. Misaal: Romania ke safar mein hum “mausam, radio par kaun si news, saath kaun baitha hai” sab nikaal dete hain aur sirf “kaun sa shehar” rakhte hain. Faida: masla chhota aur hal-pazeer ho jata hai. Shart yeh hai ke abstract hal ko asal duniya mein wapas amal mein laya ja sake (useful abstraction)."},
+ {n:4,q:"A search problem consists of all the following elements EXCEPT:",
+  o:["State space and initial state","Actions and transition model","Action cost function and goal test","Heuristic evaluation matrix table"],a:3,
+  qx:"Search problem ki formal definition mein kaun si cheez <em>shaamil nahi</em> hai (EXCEPT wala sawal)?",
+  ax:"<strong>Heuristic evaluation matrix table</strong> — yeh search problem ki definition ka hissa nahi. Problem ke 5 ajza yeh hain: state space, initial state, goal state(s)/goal test, actions, transition model, aur action cost function. Heuristic to <em>informed search algorithm</em> (jaise A*) ki extra maloomat hoti hai, masle ki apni khasiyat nahi — isi liye aik masla hal karne ke kayi mukhtalif heuristics ho sakte hain."},
+ {type:"case",title:"Case Study 2: Route Finding in Romania",
+  body:"An agent starts at Arad and wants to reach Bucharest. Available paths out of Arad are:",
+  list:["Arad → Zerind (cost: 75)","Arad → Sibiu (cost: 140)","Arad → Timisoara (cost: 118)"],span:2},
+ {n:5,q:"What is the initial state of the search tree?",
+  o:["Bucharest","Arad","Sibiu","Null"],a:1,
+  qx:"Search tree ki shuruati state (root) kya hogi?",
+  ax:"<strong>Arad</strong> — kyunke agent wahin maujood hai. Initial state = jahan se search shuru hoti hai (tree ka root). Bucharest <em>goal</em> state hai, shuruati nahi."},
+ {n:6,q:"If the agent expands node Arad, which nodes are placed on the search frontier?",
+  o:["{Bucharest}","{Zerind, Sibiu, Timisoara}","{Oradea, Fagaras, Lugoj}","{Arad, Bucharest}"],a:1,
+  qx:"Arad ko expand karne ke baad frontier (aage barhne ki qataar) mein kaun se nodes aa jayenge?",
+  ax:"<strong>{Zerind, Sibiu, Timisoara}</strong>. “Expand” ka matlab hai: us node ke tamam direct successors (parosi) paida karna. Arad ke seedhe parosi yehi teen hain. Oradea/Fagaras/Lugoj <em>agle</em> level par aayenge (Zerind/Sibiu/Timisoara ko expand karne par), is liye abhi frontier par nahi."},
+]},
+
+{key:"Ch 3.2", title:"Section 3.2: Example Problems", items:[
+ {n:1,q:"The 8-puzzle and 15-puzzle belong to which category of search problems?",
+  o:["Real-world route planning","Sliding-tile grid world problems","Continuous optimization problems","Constraint propagation trees"],a:1,
+  qx:"8-puzzle aur 15-puzzle kis qism ke search problems hain?",
+  ax:"<strong>Sliding-tile puzzles</strong> (grid world). In mein grid par tiles hote hain aur aik khaali khaana; tiles ko khisaka kar manzil-e-maqsood tarteeb banani hoti hai. Yeh “toy/standardized” problems hain jo algorithms (BFS, A*, heuristics) ko test aur compare karne ke liye istemal hote hain."},
+ {n:2,q:"How many total states exist in a standard 8-puzzle state space?",
+  o:["8! = 40,320","9! = 362,880","9!/2 = 181,440","16!/2"],a:2,
+  qx:"8-puzzle ke state space mein kitni states hoti hain?",
+  ax:"<strong>9!/2 = 181,440</strong>. 9 khaane (8 tiles + 1 blank) ki tamam tarteebain 9! = 362,880 hoti hain, magar in mein se sirf <em>aadhi</em> kisi aik di gayi state se pohonchi ja sakti hain — tiles khisakne se “parity” nahi badalti, is liye state space do alag alag halqon mein bant jata hai. Isi liye 2 par taqseem. (15-puzzle ke liye isi wajah se 16!/2 ≈ 1.3 trillion.)"},
+ {n:3,q:"The Traveling Salesperson Problem (TSP) is an example of a:",
+  o:["Simple grid world","Touring problem where every city must be visited at minimal path cost","Continuous gradient descent problem","Non-deterministic game"],a:1,
+  qx:"TSP (Traveling Salesperson Problem) kis qism ka masla hai?",
+  ax:"<strong>Touring problem</strong> — har shehar ka <em>kam az kam</em> aik baar daura karna hai aur wapas shuruati shehar aana hai, sab se kam total cost mein. Route-finding se farq: wahan sirf A se B jana hota hai, yahan <em>sab</em> shehar cover karne hain — is liye state mein “kaun kaun se shehar ho chuke hain” bhi rakhna parta hai. TSP NP-hard hai."},
+]},
+
+{key:"Ch 3.3", title:"Section 3.3: Search Algorithms", items:[
+ {n:1,q:"In a search tree data structure, what is the frontier?",
+  o:["The set of all states that have been expanded.","The set of all unexpanded nodes that have been generated (reached).","The path from the goal back to the root.","The set of all optimal goal nodes."],a:1,
+  qx:"Search tree mein “frontier” kis cheez ko kehte hain?",
+  ax:"<strong>Woh nodes jo paida (generated/reached) ho chuke hain magar abhi expand nahi hue</strong> — yani search ka “kinara”, jahan se aage barhna hai. Frontier ko aik queue mein rakha jata hai (BFS: FIFO, DFS: stack/LIFO, UCS/A*: priority queue). Jo expand ho chuke woh <em>reached/explored</em> set mein chale jate hain, frontier se nikal jate hain."},
+ {n:2,q:"What is the main difference between graph search and tree-like search?",
+  o:["Graph search uses heuristics; tree-like search does not.","Graph search checks for redundant paths/reached states; tree-like search does not check.","Tree-like search uses priority queues; graph search uses stacks.","Graph search cannot find optimal solutions."],a:1,
+  qx:"Graph search aur tree-like search mein buniyadi farq kya hai?",
+  ax:"<strong>Graph search purani (repeat) states ka hisaab rakhta hai</strong> — woh aik <code>reached</code> table rakhta hai aur jo state pehle dekh li, usay dobara expand nahi karta; is tarah cycles aur fazool raaste khatam ho jate hain. Tree-like search yeh check nahi karta, is liye woh wahi state baar baar expand kar sakta hai (ya cycle mein hamesha ke liye phans sakta hai) — magar uski memory kam lagti hai."},
+ {n:3,q:"A search algorithm is complete if:",
+  o:["It finds a solution in polynomial time.","It is guaranteed to find a solution whenever one exists.","It always finds the lowest-cost path.","It uses minimum memory space."],a:1,
+  qx:"Search algorithm ko “complete” kis surat mein kaha jata hai?",
+  ax:"<strong>Jab hal mojood ho to algorithm usay zaroor dhoond le</strong> (aur agar hal na ho to sahi batade ke hal nahi hai). Dhyaan rahein: completeness ka ta'alluq <em>hal mil jana</em> se hai, uske sasta/optimal hone se nahi — woh alag khubi hai jisay <em>cost-optimality</em> kehte hain (option C). Speed (time complexity) bhi alag cheez hai."},
+ {n:4,q:"If a search tree has branching factor <i>b</i> and optimal solution depth <i>d</i>, what is the space complexity of Breadth-First Search (BFS)?",
+  o:["O(b<sup>d</sup>)","O(b<sup>d</sup>)","O(d<sup>b</sup>)","O(b + d)"],a:0,
+  qx:"Agar branching factor <i>b</i> aur hal ki depth <i>d</i> ho, to BFS ki <em>space</em> (memory) complexity kya hogi?",
+  ax:"<strong>O(b<sup>d</sup>)</strong> — exponential. Wajah: BFS ek poori level ko memory mein rakhta hai, aur depth <em>d</em> par nodes ki tadaad b<sup>d</sup> tak pohonch jati hai (frontier + reached dono). Yahi BFS ki sab se bari kamzori hai: waqt se pehle <em>memory</em> khatam hoti hai. <em>Note:</em> original PDF mein options A aur B bilkul aik jaise print ho gaye hain (notation ki ghalti); answer key ke mutabiq sahi option <strong>A</strong> hai, jiska matlab O(b<sup>d</sup>) hai."},
+]},
+
+{key:"Ch 3.4", title:"Section 3.4: Uninformed Search Strategies", items:[
+ {n:1,q:"Which queue data structure is used to implement Breadth-First Search (BFS)?",
+  o:["Priority Queue","LIFO Queue (Stack)","FIFO Queue","Deque sorted by heuristic"],a:2,
+  qx:"BFS ko implement karne ke liye kaun si queue istemal hoti hai?",
+  ax:"<strong>FIFO queue</strong> (first-in, first-out). Jo node pehle frontier par aaya, woh pehle expand hoga — is tarah search level-by-level phailti hai (pehle saare depth 1, phir saare depth 2, aur aage). Stack (LIFO) DFS deta hai, aur priority queue Uniform-Cost/A* ke liye hoti hai."},
+ {n:2,q:"Uniform-Cost Search (Dijkstra’s algorithm) expands frontier nodes in order of:",
+  o:["Node depth d(n)","Heuristic estimate h(n)","Accumulated path cost g(n)","Total estimated cost g(n) + h(n)"],a:2,
+  qx:"Uniform-Cost Search nodes ko kis tarteeb se expand karta hai?",
+  ax:"<strong>g(n) — shuru se us node tak jama hone wali total cost</strong>. Yani jo node sab se “sasta” (kam cost par) pohoncha hai, woh pehle khulega. Is liye UCS un rastay ko tarjeeh deta hai jo ab tak kam kharch mein chal rahe hain, aur positive costs ke sath yeh cost-optimal hota hai. (h(n) greedy hai, aur g+h A* hai.)"},
+ {n:3,q:"When is Uniform-Cost Search guaranteed to be cost-optimal?",
+  o:["Always, even with negative action costs.","When all action costs are strictly bounded below by some ε > 0.","Only when all action costs are equal to 1.","When it uses an early goal test upon node generation."],a:1,
+  qx:"UCS kab yaqeeni taur par sab se sasta (cost-optimal) hal deta hai?",
+  ax:"<strong>Jab har action ki cost kisi chhote positive number ε se zyada ho</strong> (yani koi bhi step 0 ya minus cost ka na ho). Agar costs 0 ya negative hon to algorithm hamesha ke liye sasti chaalon ke loop mein ghoom sakta hai aur optimality toot jati hai. Note: barabar costs (C) sirf aik khaas surat hai — shart us se zyada aam hai; aur early goal test optimality torta hai, banata nahi."},
+ {n:4,q:"What is the primary advantage of standard Depth-First Search (DFS) over Breadth-First Search (BFS)?",
+  o:["DFS is always cost-optimal.","DFS has much smaller memory requirements (O(bm) vs O(b<sup>d</sup>)).","DFS is guaranteed to terminate on infinite state spaces.","DFS expands fewer total nodes on all state spaces."],a:1,
+  qx:"BFS ke muqable DFS ka sab se bara faida kya hai?",
+  ax:"<strong>Memory bohat kam lagti hai</strong>: DFS ko sirf maujooda raasta aur uske parosi yaad rakhne hote hain — O(bm) (m = maximum depth), jab ke BFS ko poori level yaad rakhni parti hai — O(b<sup>d</sup>), jo exponential hai. Baqi options galat hain: DFS optimal nahi hota, aur infinite/cyclic state space mein woh hamesha ke liye neeche utarta reh sakta hai."},
+ {n:5,q:"What does Iterative Deepening Search (IDS) do to combine the benefits of BFS and DFS?",
+  o:["It runs BFS on even depths and DFS on odd depths.","It repeatedly applies depth-limited search with increasing depth limits (0, 1, 2, …).","It stores all states in a hash table while searching down deep branches.","It uses heuristic values to bound depth limits dynamically."],a:1,
+  qx:"IDS kis tarah BFS aur DFS dono ke faide jama kar leta hai?",
+  ax:"<strong>Woh depth-limited DFS ko barhte huye limits ke sath baar baar chalata hai</strong>: pehle limit 0, phir 1, phir 2… jab tak hal mil jaye. Faida: memory DFS jaisi kam (O(bd)) aur guarantee BFS jaisi (sab se kam depth wala hal pehle milta hai, yani complete aur — barabar costs par — optimal). Dobara kaam hone ka nuqsaan mamooli hai kyunke nodes ki zyadati aakhri level mein hoti hai."},
+ {n:6,q:"What is the asymptotic time complexity of Iterative Deepening Search for branching factor <i>b</i> and solution depth <i>d</i>?",
+  o:["O(b<sup>d</sup>)","o(b<sup>d</sup>)","O(d<sup>b</sup>)","O(2<sup>d</sup>)"],a:0,
+  qx:"IDS ki time complexity kya hoti hai (branching factor b, solution depth d)?",
+  ax:"<strong>O(b<sup>d</sup>)</strong> — BFS ke barabar hi. Aisa is liye hai ke tree mein nodes ki tadaad har level par b guna barhti hai, to sab se neeche wali level hi tamam upar wali levels ke jor se bhi bari hoti hai; baar baar upar ki levels dobara dekhne ka kharch constant factor se zyada nahi barhta. Yani IDS, BFS jitna waqt leta hai magar memory bohat kam."},
+ {n:7,q:"Bidirectional search reduces search time theoretically from O(b<sup>d</sup>) to:",
+  o:["O(b<sup>d</sup>)","O(b<sup>d/2</sup>)","O(d<sup>b/2</sup>)","O(b<sup>d</sup>)"],a:1,
+  qx:"Bidirectional search time ko O(b<sup>d</sup>) se kam kar ke kis level par le aati hai?",
+  ax:"<strong>O(b<sup>d/2</sup>)</strong>. Tareeqa: aik search shuru se aage barhti hai aur doosri goal se peechhe ki taraf, aur dono beech mein milti hain. Har search ko sirf aadhi gehrai (d/2) tak jana parta hai, to kharch b<sup>d/2</sup> + b<sup>d/2</sup> = 2b<sup>d/2</sup> reh jata hai — jo b<sup>d</sup> se bohat hi kam hai (jaise b=10, d=6: 2,000 ke muqable 1,000,000). <em>Note:</em> original PDF mein options A aur D dono O(b<sup>d</sup>) print ho gaye hain (notation ki ghalti); sahi jawab wazeh taur par B hai."},
+]},
+
+{key:"Ch 3.5", title:"Section 3.5: Informed (Heuristic) Search Strategies", items:[
+ {n:1,q:"In informed search, what does the heuristic function h(n) estimate?",
+  o:["The path cost from the root to node n.","The cost of the cheapest path from the state at node n to a goal state.","The total depth of node n.","The number of action choices at node n."],a:1,
+  qx:"Informed search mein h(n) kis cheez ka andaza lagata hai?",
+  ax:"<strong>Node n se goal tak sab se saste raaste ki cost ka andaza</strong> — yani “ab kitna aur baqi hai”. Yaad rakhein: g(n) = “ab tak kitna kharch ho gaya” (peechhe dekhta hai), h(n) = “aage kitna lagega” (aage dekhta hai). Misaal: Romania mein straight-line distance Bucharest tak."},
+ {n:2,q:"Greedy best-first search uses which evaluation function to select nodes for expansion?",
+  o:["f(n) = g(n)","f(n) = h(n)","f(n) = g(n) + h(n)","f(n) = g(n) − h(n)"],a:1,
+  qx:"Greedy best-first search node chunne ke liye kaun sa formula istemal karti hai?",
+  ax:"<strong>f(n) = h(n)</strong> — sirf “jo goal ke sab se qareeb lagta hai” usay pehle khol deti hai, ab tak hua kharch (g) bilkul nazarandaz. Is liye woh tez hoti hai magar na complete na optimal — kabhi aisa raasta pakar leti hai jo qareeb lagta tha magar lamba nikla (jaise Arad → Sibiu → Fagaras wala masla)."},
+ {n:3,q:"A search combines path cost and heuristic estimate using which evaluation function?",
+  o:["f(n) = g(n) · h(n)","f(n) = g(n) + h(n)","f(n) = g(n) / h(n)","f(n) = (g(n), h(n))"],a:1,
+  qx:"Kaun sa formula ab tak ki cost aur aage ke andaze dono ko jama karta hai (yani A* ka formula)?",
+  ax:"<strong>f(n) = g(n) + h(n)</strong>. Iska matlab: “is node se guzarne wale poore raaste ki total cost ka andaza” = (ab tak kharch) + (aage ka andaza). A* isi f ki tarteeb mein nodes expand karta hai, is liye woh UCS (sirf g) aur greedy (sirf h) dono ka behtareen milap hai."},
+ {n:4,q:"A heuristic h(n) is admissible if:",
+  o:["It overestimates the true cost to reach a goal.","It never overestimates the true cost to reach a goal state.","It equals zero for all non-goal states.","It changes dynamically during execution."],a:1,
+  qx:"Heuristic ko “admissible” kab kaha jata hai?",
+  ax:"<strong>Jab woh asli cost se kabhi zyada na batae</strong> (yani h(n) ≤ h*(n) — hamesha ya to sahi ya kam andaza; aik qism ki “optimistic” heuristic). Yeh shart aham hai kyunke isi se A* ka optimal hona guarantee hota hai: agar heuristic kabhi zyada bata de to A* sasta hal chhor kar aage barh sakta hai. Misaal: straight-line distance hamesha sarak ke faasle se kam ya barabar hoti hai."},
+ {n:5,q:"A heuristic h(n) is consistent (or monotonic) if for every node n and successor n′ generated by action a:",
+  o:["h(n) ≤ c(n, a, n′) + h(n′)","h(n) > c(n, a, n′) + h(n′)","h(n) = h(n′) + g(n)","h(n) ≥ g(n)"],a:0,
+  qx:"Heuristic “consistent” (monotonic) kab hoti hai — iski shart kya hai?",
+  ax:"<strong>h(n) ≤ c(n, a, n′) + h(n′)</strong>. Saada matlab: aik qadam le kar aage jaane se andaza us qadam ki cost se zyada kam nahi hona chahiye — yeh triangle inequality ka hi roop hai. Iska faida: f value raaste par kabhi ghatti nahi (isi liye “monotonic”), aur graph-search A* bina kisi node ko dobara kholne ke optimal rehta hai. Har consistent heuristic admissible bhi hoti hai (ulta zaroori nahi)."},
+ {type:"case",title:"Case Study 3: A* Search Step",
+  body:"A node n has spent path cost g(n) = 10. The estimated remaining distance to goal is h(n) = 5.",span:1},
+ {n:6,q:"What is the f(n) value evaluated by A* search for this node?",
+  o:["5","10","15","50"],a:2,
+  qx:"g(n) = 10 aur h(n) = 5 diya hai; A* is node ke liye f(n) kya nikalega?",
+  ax:"<strong>15</strong>. Formula: f(n) = g(n) + h(n) = 10 + 5 = 15. Yani “is node se guzar kar goal tak poore raaste ki total cost” ka andaza 15 hai. (50 wala option multiply karne ka dhoka hai — A* mein jama hota hai, zarb nahi.)"},
+ {n:7,q:"If a goal node G is generated with path cost g(G) = 18 and h(G) = 0, what is its f(G) value?",
+  o:["0","9","18","36"],a:2,
+  qx:"Goal node G par g(G) = 18 aur h(G) = 0 hai; f(G) kya hoga?",
+  ax:"<strong>18</strong>. f(G) = g(G) + h(G) = 18 + 0 = 18. Goal par h hamesha 0 hota hai (aage kuch baqi nahi), is liye goal node ka f uske asli raaste ki cost ke barabar ho jata hai — isi khaasiyat ki wajah se A* yeh keh sakta hai ke jab goal frontier se nikla to uska 18 hi behtareen cost hai."},
+ {n:8,q:"Weighted A* search uses which formula for a weight W > 1?",
+  o:["f(n) = W g(n) + h(n)","f(n) = g(n) + W h(n)","f(n) = W(g(n) + h(n))","f(n) = g(n)<sup>W</sup> + h(n)"],a:1,
+  qx:"Weighted A* (W > 1) kaun sa formula istemal karta hai?",
+  ax:"<strong>f(n) = g(n) + W·h(n)</strong> — yani heuristic ko zyada wazan diya jata hai, taake search goal ki taraf zyada seedhi lapke. Faida: nodes bohat kam khulte hain, hal jaldi milta hai. Nuqsaan: hal optimal nahi rehta — magar guarantee yeh rehti hai ke woh optimal se zyada se zyada W guna mehnga hoga (W-admissible). W = 1 par yeh A* hai, aur W bohat bara = greedy jaisa."},
+ {n:9,q:"Which algorithm adapts iterative deepening to informed search by using the f-cost limit as the threshold for depth expansion?",
+  o:["RBFS","IDA* (Iterative-Deepening A*)","SMA*","Beam Search"],a:1,
+  qx:"Kaun sa algorithm iterative deepening ka tareeqa informed search par lagata hai, magar depth ki jagah f-cost ki limit rakh kar?",
+  ax:"<strong>IDA* (Iterative-Deepening A*)</strong>. Yeh depth ki limit ki jagah <em>f-cost</em> ki limit rakhta hai: aik cutoff par DFS chalao; jo nodes us f se zyada hon unhein chhor do; agar hal na mile to cutoff ko agle sab se chhote f par barha kar dobara chalao. Faida: A* jaisi optimality magar memory sirf linear. RBFS aur SMA* bhi memory-bounded hain magar unka tareeqa alag hai (backed-up f values / worst leaf dropping)."},
+ {n:10,q:"Simplified Memory-bounded A* (SMA*) manages tight memory limits by:",
+  o:["Deleting the entire search tree when full.","Dropping the worst leaf node with the highest f-value and backing up its value to its parent.","Switching to unweighted BFS.","Ignoring all action costs."],a:1,
+  qx:"SMA* kam memory mein kaise kaam chalata hai?",
+  ax:"<strong>Memory bhar jaane par woh sab se kharab leaf (jiska f sab se zyada ho) ko hata deta hai, aur uski f value uske parent mein mehfooz (backed-up) kar deta hai</strong>. Is tarah “bhula hua” sub-tree zaroorat parne par dobara banaya ja sakta hai, kyunke parent ko yaad hai ke us taraf kam az kam kitni cost thi. Yani SMA* poora available memory istemal karta hai, kuch bhi fazool phenkta nahi."},
+]},
+
+{key:"Ch 3.6", title:"Section 3.6: Heuristic Functions", items:[
+ {n:1,q:"For the 8-puzzle, what is the Manhattan distance heuristic h<sub>2</sub>?",
+  o:["The count of tiles that are not in their goal position.","The sum of the horizontal and vertical grid distances of each tile from its goal position.","The straight-line Euclidean distance between tile coordinates.","The total number of swaps required to order the array."],a:1,
+  qx:"8-puzzle ke liye Manhattan distance heuristic (h₂) kya hoti hai?",
+  ax:"<strong>Har tile ka apni sahi jagah se horizontal + vertical faasla, aur phir sab tiles ka jor</strong> (blank ko chhor kar). Isay “city block distance” bhi kehte hain kyunke tile sirf seedha/upar-neeche khisak sakta hai, terchha nahi. Option A doosri heuristic h₁ hai (misplaced tiles ki ginti), aur h₂ us se behtar (dominating) hai kyunke woh faasle ki miqdaar bhi ginta hai, sirf galat hona nahi."},
+ {n:2,q:"If heuristic h<sub>2</sub>(n) ≥ h<sub>1</sub>(n) for all nodes n (and both are admissible), we say that h<sub>2</sub>:",
+  o:["Is dominated by h<sub>1</sub>","Dominates h<sub>1</sub> and will expand fewer or equal nodes in A* search","Is inconsistent relative to h<sub>1</sub>","Has a higher effective branching factor"],a:1,
+  qx:"Agar h₂ har node par h₁ se bara ya barabar ho (aur dono admissible hon), to h₂ ke bare mein kya kehte hain?",
+  ax:"<strong>h₂, h₁ par ghalib (dominates) hai — aur A* us ke sath barabar ya kam nodes kholega</strong>. Mantiq: bari (magar phir bhi admissible) heuristic asli cost ke zyada qareeb hoti hai, is liye woh zyada fazool branches ko kaat deti hai. Usool: hamesha woh admissible heuristic chunein jo sab se bari ho (is liye kayi heuristics ka maximum lena bhi acha chalta hai)."},
+ {n:3,q:"A heuristic derived by solving a simplified version of a problem with fewer constraints on actions is called a:",
+  o:["Pattern database","Relaxed problem heuristic","Disjoint database","Random walk heuristic"],a:1,
+  qx:"Woh heuristic jo masle ki aasan shakal (kam pabandiyon wali) hal kar ke banayi jaye, usay kya kehte hain?",
+  ax:"<strong>Relaxed problem heuristic</strong>. Misaal: 8-puzzle mein agar yeh pabandi hata dein ke tile sirf khaali khaane mein khisak sakta hai, to har tile udd kar apni jagah ja sakta hai — isi se Manhattan distance nikalti hai. Khoobi: relaxed masle ka hal asli masle se kabhi mehnga nahi hota, is liye aisi heuristic hamesha <em>admissible</em> hoti hai. Pattern database alag tareeqa hai (sub-problems ki exact costs pehle se store karna)."},
+]},
+]},
+
+{ch:"Chapter 4: Search in Complex Environments (4.1 – 4.2)", secs:[
+
+{key:"Ch 4.1", title:"Section 4.1: Local Search and Optimization Problems", items:[
+ {n:1,q:"Unlike systematic tree search algorithms, local search algorithms:",
+  o:["Maintain all paths from the root in memory.","Operate from a single current node (or population) and move only to neighbors, using minimal memory.","Guarantee global optimality in all continuous spaces.","Rely strictly on admissible heuristics."],a:1,
+  qx:"Local search algorithms, aam (systematic) tree search se kis tarah mukhtalif hain?",
+  ax:"<strong>Woh sirf aik maujooda state (ya states ki aik chhoti population) rakhte hain aur uske parosiyon mein hi aage barhte hain — memory bohat kam</strong>. Inhein raasta (path) yaad nahi rakhna hota, kyunke jawab khud <em>state</em> hoti hai, us tak pohonchne ka raasta nahi (jaise 8-queens mein final arrangement chahiye, chaalon ki list nahi). Faida: bare/infinite spaces mein bhi chal jate hain; nuqsaan: global optimum ki guarantee nahi."},
+ {n:2,q:"In an optimization problem landscape, a state that has a higher value than all its immediate neighbors but is lower than the global maximum is called a:",
+  o:["Global maximum","Local maximum","Plateau","Ridge"],a:1,
+  qx:"Woh state jo apne tamam parosiyon se behtar ho magar poore space ke sab se behtar point se kam ho — usay kya kehte hain?",
+  ax:"<strong>Local maximum</strong>. Yeh local search ka sab se bara dushman hai: hill-climbing wahan pohonch kar ruk jata hai kyunke aas paas koi behtar parosi nahi, chahe kahin door us se bohat behtar (global maximum) mojood ho. <em>Plateau</em> = barabar value ka hamwar ilaqa, aur <em>ridge</em> = aisi tang dhaar jahan har aik qadam neeche le jata hai magar terchha chalna upar le jata."},
+ {n:3,q:"The Hill-climbing search algorithm continuously moves in the direction of:",
+  o:["Decreasing path cost from initial state.","Increasing value / steepest elevation gain.","Random neighbor selection regardless of evaluation.","Deepest tree node."],a:1,
+  qx:"Hill-climbing kis simt mein barhta rehta hai?",
+  ax:"<strong>Barhti hui value ki taraf — yani sab se tez chadhai (steepest ascent) wale parosi ki taraf</strong>. Tareeqa bilkul saada hai: tamam parosiyon ko dekho, jo sab se behtar ho udhar chale jao, aur jab koi parosi behtar na ho to ruk jao. Isay “dhund mein pahar chadhna aur yaadash kuch nahi” (greedy local search) bhi kaha jata hai."},
+ {n:4,q:"What happens when a standard hill-climbing search reaches a flat local maximum (shoulder or plateau)?",
+  o:["It accelerates to exponential speed.","It gets stuck or wanders aimlessly because no neighbor has a higher elevation.","It automatically resets to the root node.","It switches to uniform-cost search."],a:1,
+  qx:"Jab hill-climbing kisi hamware (flat) hisse — plateau ya shoulder — par pohonch jaye to kya hota hai?",
+  ax:"<strong>Woh phans jata hai ya be-maqsad bhatakta rehta hai</strong>, kyunke koi bhi parosi upar nahi le jata (sab barabar hain). Iska aik ilaaj “sideways moves” ki ijazat dena hai (barabar value par chalne dena, aik hadd tak) — is se “shoulder” par se nikal kar aage chadhai mil sakti hai, magar asli flat local maximum par woh bhi bekaar hai. Doosre ilaaj: random-restart hill climbing, simulated annealing."},
+ {n:5,q:"Simulated Annealing avoids getting stuck in local maxima by:",
+  o:["Never accepting bad moves.","Allowing “downhill” (worse) moves with a probability that decreases according to a temperature schedule T.","Maintaining a population of 100 parallel trees.","Using first-order logic provers."],a:1,
+  qx:"Simulated annealing local maxima mein phansne se kaise bachta hai?",
+  ax:"<strong>Woh kabhi kabhi jaan boojh kar “neeche” (kharab) chaal bhi qabool karta hai, aur iski probability temperature T ke sath ghatti jati hai</strong>. Shuru mein T zyada hoti hai (bohat uchhal-kood, local maxima se nikalna aasan), phir T ahista ahista kam hoti hai aur algorithm hill-climbing jaisa sakht ho jata hai. Naam dhaat ko tapa kar ahista thanda karne (annealing) ke amal se liya gaya hai."},
+ {type:"case",title:"Case Study 4: Simulated Annealing Acceptance Probability",
+  body:"In simulated annealing, a proposed move decreases objective value by ΔE = −10. The current temperature is T = 10.",span:1},
+ {n:6,q:"According to the standard Boltzmann acceptance formula P = e<sup>ΔE/T</sup>, what is the probability of accepting this worse move?",
+  o:["e<sup>−1</sup> ≈ 0.368","e<sup>−100</sup>","e<sup>1</sup>","0"],a:0,
+  qx:"ΔE = −10 aur T = 10 ke sath P = e<sup>ΔE/T</sup> se is kharab chaal ke qabool hone ki probability kya banegi?",
+  ax:"<strong>e<sup>−1</sup> ≈ 0.368</strong>, yani taqreeban 37% imkaan. Hisaab: ΔE/T = −10/10 = −1, to P = e<sup>−1</sup> = 0.368. (Dhyaan: ΔE aur T ko aapas mein <em>taqseem</em> karna hai, zarb nahi — zarb karne par galti se e<sup>−100</sup> wala option chun liya jata hai.) Nuqta: T jitni zyada ho, kharab chaal qabool hone ka imkaan utna zyada."},
+ {n:7,q:"In Local Beam Search, what happens on each iteration with beam width k?",
+  o:["k independent searches run without communicating.","k states are tracked; all successors of all k states are generated, and the k best successors across the whole set are retained.","The search expands k levels deep into the tree.","Memory stores k paths back to root."],a:1,
+  qx:"Local beam search (beam width k) ke har iteration mein kya hota hai?",
+  ax:"<strong>k states saath saath rakhi jati hain; un sab ke tamam successors banaye jate hain, aur poore majmue mein se behtareen k chun li jati hain</strong>. Aham baat: yeh k alag alag mustaqil searches <em>nahi</em> hain (woh random-restart hota) — yahan maloomat mushtarik hoti hai, is liye jo shakhein behtar ja rahi hoti hain un ki taraf saari search khinch jati hai. Kamzori: tamam k states aik hi ilaqe mein jama ho sakti hain (variety khatam) — iska hal <em>stochastic</em> beam search hai."},
+ {n:8,q:"Genetic Algorithms combine states (parents) to produce new offspring using which primary operator?",
+  o:["Backtracking","Crossover (recombination)","Resolution","Alpha-beta pruning"],a:1,
+  qx:"Genetic algorithms do “walidain” (parents) ko mila kar nayi state banane ke liye kaun sa amal istemal karte hain?",
+  ax:"<strong>Crossover (recombination)</strong>. Do parent strings ko kisi point par kaat kar un ke hisse aapas mein badal diye jate hain, is tarah bacha dono ki khasiyatein le kar banta hai. Iske ilawa <em>mutation</em> (aik jagah par chhoti random tabdeeli) aur <em>selection</em> (fitness ke mutabiq chunao) bhi hote hain. Resolution logic ka tareeqa hai aur alpha-beta pruning games ka — dono yahan mutaliq nahi."},
+ {n:9,q:"In a genetic algorithm, what determines the probability that a particular state will be chosen for reproduction?",
+  o:["Its depth in the tree.","Its score according to a fitness function.","The number of mutation steps it has undergone.","Its distance from the origin."],a:1,
+  qx:"Genetic algorithm mein kisi state ke “valid” (reproduction ke liye) chune jane ka imkaan kis par depend karta hai?",
+  ax:"<strong>Uski fitness function wali score par</strong> — jitni behtar state, utna zyada imkaan ke uski aulad banegi (survival of the fittest). Aam tareeqa: har state ko uski fitness ke mutanasib (proportional) probability dena, taake achhi states zyada bar chuni jayein magar kamzor states ka bhi thora mauqa rahe (variety barqarar rehti hai)."},
+]},
+
+{key:"Ch 4.2", title:"Section 4.2: Local Search in Continuous Spaces", items:[
+ {n:1,q:"In continuous state spaces, what vector specifies the direction of steepest growth of an objective function f(x)?",
+  o:["Hessian matrix","Gradient vector ∇f(x)","Laplacian vector","Eigenvector"],a:1,
+  qx:"Continuous space mein kaun sa vector batata hai ke function f(x) sab se tezi se kis simt barhta hai?",
+  ax:"<strong>Gradient vector ∇f(x)</strong>. Yeh tamam variables ke partial derivatives ka majmua hai, aur yeh hamesha sab se tez chadhai ki simt dikhata hai (iska size batata hai kitni tez dhalan hai). Hessian doosre darje ke derivatives ka matrix hai (dhalan ki tabdeeli / curvature), jo Newton’s method mein kaam aata hai, simt batane ke liye nahi."},
+ {n:2,q:"Updating continuous state vector x via x ← x + α∇f(x) is called:",
+  o:["Empirical gradient search","Gradient ascent (or descent if subtracting) with step size α","Constraint satisfaction","Line search bisection"],a:1,
+  qx:"x ← x + α∇f(x) wale update ka naam kya hai?",
+  ax:"<strong>Gradient ascent</strong> (aur agar jama ki jagah tafreeq ho, yani x ← x − α∇f(x), to <em>gradient descent</em>), jahan α “step size” ya learning rate hai. Matlab: har qadam par dhalan ki simt mein thora aage barh jao. α bohat chhota ho to bohat waqt lagta hai, bohat bara ho to hal ke upar se kood jate hain (overshoot). Yahi machine learning ki training ka bunyadi engine hai."},
+]},
+]},
+
+{ch:"Chapter 5: Constraint Satisfaction Problems (5.1 – 5.5)", secs:[
+
+{key:"Ch 5.1", title:"Section 5.1: Defining Constraint Satisfaction Problems", items:[
+ {n:1,q:"A Constraint Satisfaction Problem (CSP) is represented by three components (X, D, C). What do these stand for?",
+  o:["Variables, Domains, Constraints","Vectors, Degrees, Conditions","Values, Dimensions, Costs","Vertices, Directed Edges, Components"],a:0,
+  qx:"CSP ke teen ajza (X, D, C) kis cheez ko zahir karte hain?",
+  ax:"<strong>X = Variables, D = Domains, C = Constraints</strong>. Misaal (Australia map coloring): X = suboon ke naam (WA, NT, SA, Q, NSW, V, T), D = har soobe ke liye mumkin rang {red, green, blue}, C = sharait jaise “SA ≠ NSW” (parosi suboon ka rang aik na ho). CSP ki khoobi yeh hai ke state <em>factored</em> hoti hai (variables mein tooti hui), is liye hum atomic search se zyada hoshiyari kar sakte hain."},
+ {n:2,q:"A CSP state is called consistent (or legal) if:",
+  o:["Every variable is assigned a value.","It does not violate any constraints.","It optimizes the utility function.","It has been checked by A* search."],a:1,
+  qx:"CSP ki state ko “consistent” (ya legal) kab kaha jata hai?",
+  ax:"<strong>Jab woh kisi constraint ki khilaf-warzi na kare</strong>. Dhyaan rahein: consistent hone ke liye yeh zaroori nahi ke tamam variables ko value mil gayi ho — woh alag khubi hai jisay <em>complete</em> assignment kehte hain. Aur jo assignment dono ho — consistent + complete — usay CSP ka <em>solution</em> kaha jata hai."},
+ {n:3,q:"A constraint that involves exactly two variables (such as SA ≠ NSW in map coloring) is a:",
+  o:["Unary constraint","Binary constraint","Global constraint","Continuous constraint"],a:1,
+  qx:"Woh constraint jo theek do variables par lagti ho (jaise SA ≠ NSW) — usay kya kehte hain?",
+  ax:"<strong>Binary constraint</strong>. Ginti ke hisaab se: <em>unary</em> = aik variable par (jaise “SA red nahi ho sakta”), <em>binary</em> = do variables par, aur <em>global</em> = teen ya zyada (aksar bohat se) variables par, jaise Sudoku ka Alldiff. Binary constraints khaas ahmiyat rakhti hain kyunke inhein constraint graph se dikhaya ja sakta hai aur arc consistency isi par chalti hai."},
+]},
+
+{key:"Ch 5.2", title:"Section 5.2: Constraint Propagation: Inference in CSPs", items:[
+ {n:1,q:"In CSPs, what is the process of using constraints to reduce the number of legal values for variables called?",
+  o:["Backtracking","Constraint propagation","Heuristic expansion","State abstraction"],a:1,
+  qx:"CSP mein constraints ki madad se variables ki mumkin values kam karne ke amal ko kya kehte hain?",
+  ax:"<strong>Constraint propagation</strong>. Khayal yeh hai: aik variable ki domain chhoti karte hi uske parosi variables ki domain bhi chhoti ho jati hai, aur yeh asar aage barhta (propagate) chala jata hai. Yeh search se pehle bhi chalayi ja sakti hai aur search ke doran bhi (interleaved) — kabhi kabhi is se masla bina search ke hi hal ho jata hai (jaise aasan Sudoku)."},
+ {n:2,q:"A variable arc X → Y is arc-consistent if:",
+  o:["Every value in X’s domain is consistent with at least one value in Y’s domain under the constraint between them.","X and Y have identical domain sizes.","X has only one value remaining.","All variables in the CSP share one domain."],a:0,
+  qx:"Arc X → Y ko “arc-consistent” kab kaha jata hai?",
+  ax:"<strong>Jab X ki domain ki har value ke liye Y ki domain mein kam az kam aik aisi value mojood ho jo constraint poori karti ho</strong>. Agar X ki kisi value ka Y mein koi “partner” na ho, to woh value bekaar hai aur X ki domain se hata di jati hai. Note: arc aik taraf ka hota hai — X → Y consistent hona Y → X ka consistent hona zaroori nahi banata, is liye dono simtein check karni parti hain."},
+ {n:3,q:"The AC-3 algorithm enforces arc consistency across a CSP network. What is its worst-case time complexity for n variables with maximum domain size d and c binary constraints?",
+  o:["O(nd)","O(cd<sup>2</sup>)","O(n<sup>2</sup>d<sup>3</sup>)","O(d<sup>n</sup>)"],a:1,
+  qx:"AC-3 algorithm ki worst-case time complexity kya hai (n variables, domain size d, c binary constraints)?",
+  ax:"<strong>Is quiz ke answer key ke mutabiq jawab B — O(cd<sup>2</sup>)</strong> hai. Imtihaan ke liye aham nukta yeh hai ke AC-3 <em>polynomial</em> hai, exponential O(d<sup>n</sup>) nahi (O(d<sup>n</sup>) to poori CSP ki brute-force search ki complexity hai). <em>Diyanatdari se aik tasheeh:</em> asal kitaab (AIMA, §6.2) mein AC-3 ki worst-case complexity <strong>O(cd<sup>3</sup>)</strong> di gayi hai — har arc queue mein d baar aa sakta hai aur aik arc check karne par d<sup>2</sup> jore dekhne parte hain. Options mein O(cd<sup>3</sup>) mojood hi nahi, aur B us ke sab se qareeb hai, is liye yahan B hi chunna hai — magar kitaab wali value yaad rakhein."},
+]},
+
+{key:"Ch 5.3", title:"Section 5.3: Backtracking Search for CSPs", items:[
+ {n:1,q:"Standard backtracking search for CSPs enhances simple depth-first search by:",
+  o:["Assigning values to all variables simultaneously.","Fixing variable order and checking constraints incrementally, picking values for one variable at a time and backtracking upon constraint violation.","Converting constraints into heuristic matrices.","Using priority queues sorted by path cost."],a:1,
+  qx:"CSP ka backtracking search, aam DFS se behtar kaise hai?",
+  ax:"<strong>Woh aik waqt mein aik variable ko value deta hai, har qadam par constraints check karta hai, aur khilaf-warzi hote hi peechhe (backtrack) laut jata hai</strong>. Do bari bachatein: (1) variables ki tarteeb fix kar dene se wahi assignment mukhtalif tarteebon mein dobara nahi dekhi jati (n! ki jagah d<sup>n</sup>), aur (2) galat raasta shuru mein hi pakar liya jata hai, poora assignment banane ka intezaar nahi karna parta."},
+ {n:2,q:"The Minimum Remaining Values (MRV) heuristic selects next which variable to assign?",
+  o:["The variable involved in the fewest constraints.","The variable with the fewest remaining legal values (“most constrained variable”).","The variable with the largest domain size.","A variable chosen completely at random."],a:1,
+  qx:"MRV heuristic agla variable kis bunyad par chunti hai?",
+  ax:"<strong>Jis variable ki baqi bachi legal values sab se kam hon</strong> (“most constrained variable”). Isay “fail-first” usool kehte hain: jo variable sab se zyada tang hai usay pehle hi nipta lo, kyunke agar wahan fail hona hai to abhi hi ho jaye — baad mein poora bara tree banane ke baad fail hone se bohat waqt bachta hai. (Agar kisi variable ki 0 values bachi hon to foran backtrack.) Option A “degree heuristic” ka ulta bayan hai."},
+ {n:3,q:"When choosing a value for a selected CSP variable, the Least Constraining Value (LCV) heuristic selects the value that:",
+  o:["Rules out the fewest choices for neighboring variables in the constraint graph.","Violates the most constraints.","Reduces the variable domain to zero.","Appears first in alphabetical order."],a:0,
+  qx:"Variable chun lene ke baad LCV heuristic kaun si value chunti hai?",
+  ax:"<strong>Woh value jo parosi variables ke liye sab se kam options khatam kare</strong> — yani aage ke liye zyada se zyada lachak (flexibility) chhor de. Yaad rakhne ka tareeqa: <em>variable</em> chunne mein hum “fail-first” hain (MRV: sab se tang pehle), magar <em>value</em> chunne mein “succeed-first” (LCV: sab se kushadah pehle) — kyunke variable to har haal mein assign karna hi hai, magar value sirf aik hi chahiye."},
+]},
+]},
+];
+
+/* ===================== BUILD ===================== */
+const LET = ["A","B","C","D","E"];
+const TICK = '<span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>Sahi jawab</span>';
+const main = document.getElementById("main");
+const chaptabs = document.getElementById("chaptabs");
+const secpills = document.getElementById("secpills");
+const srchnote = document.getElementById("srchnote");
+const nores = document.getElementById("nores");
+
+/* flatten sections, remember which chapter each belongs to */
+const SECS = [];
+DATA.forEach(function (c, ci) {
+  c.secs.forEach(function (s) {
+    SECS.push({ ci: ci, chap: c.ch, key: s.key, title: s.title, items: s.items });
+  });
+});
+
+function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+
+function qCard(it, secIdx) {
+  var opts = it.o.map(function (o, i) {
+    var ok = i === it.a;
+    return '<li class="' + (ok ? "ok" : "") + '"><span class="ltr">' + LET[i] + '.</span><span>' + o + "</span>" + (ok ? TICK : "") + "</li>";
+  }).join("");
+  return '<article class="q" data-q="' + secIdx + "-" + it.n + '">' +
+    '<div class="qh"><span class="qn">' + it.n + "</span><p class=\"qt\">" + it.q + "</p></div>" +
+    '<ol class="opts">' + opts + "</ol>" +
+    '<p class="ansline">Answer key: <b>' + LET[it.a] + "</b></p>" +
+    '<details class="exp"><summary><span class="arw">&#9656;</span>&#128161; Samajhne ke liye &mdash; sawal &amp; jawab (Roman Urdu)</summary>' +
+    '<div class="expbody">' +
+    '<div class="ex"><span class="lbl">Sawal kya poochh raha hai</span><p>' + it.qx + "</p></div>" +
+    '<div class="ex a"><span class="lbl">Sahi jawab: ' + LET[it.a] + " &mdash; kyun?</span><p>" + it.ax + "</p></div>" +
+    "</div></details></article>";
+}
+
+function caseCard(it) {
+  return '<div class="case"><h5>' + it.title + "</h5><p>" + it.body + "</p>" +
+    (it.list ? "<ul>" + it.list.map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ul>" : "") +
+    "</div>";
+}
+
+/* render every section (hidden unless active) */
+SECS.forEach(function (s, i) {
+  var qCount = s.items.filter(function (x) { return x.type !== "case"; }).length;
+  var body = s.items.map(function (it) {
+    return it.type === "case" ? caseCard(it) : qCard(it, i);
+  }).join("");
+  var el = document.createElement("section");
+  el.className = "secwrap";
+  el.dataset.sec = i;
+  el.innerHTML = '<div class="sechead"><span class="eyebrow">' + esc(s.chap) + "</span>" +
+    "<h4>" + esc(s.title) + "</h4>" +
+    '<p class="meta">' + esc(s.key) + " &middot; " + qCount + " questions &middot; Section " + (i + 1) + " of " + SECS.length + "</p></div>" + body;
+  main.appendChild(el);
+});
+
+/* chapter tabs */
+DATA.forEach(function (c, ci) {
+  var b = document.createElement("button");
+  b.className = "tab";
+  b.type = "button";
+  b.dataset.ch = ci;
+  b.textContent = "Chapter " + (ci + 1);
+  b.title = c.ch;
+  chaptabs.appendChild(b);
+});
+
+var state = { ch: 0, sec: 0 };
+
+function sectionsOf(ci) {
+  return SECS.map(function (s, i) { return { s: s, i: i }; }).filter(function (x) { return x.s.ci === ci; });
+}
+
+function render() {
+  /* chapter tabs */
+  Array.prototype.forEach.call(chaptabs.children, function (b) {
+    b.classList.toggle("active", +b.dataset.ch === state.ch);
+  });
+  /* section pills */
+  secpills.innerHTML = "";
+  sectionsOf(state.ch).forEach(function (x) {
+    var n = x.s.items.filter(function (it) { return it.type !== "case"; }).length;
+    var b = document.createElement("button");
+    b.className = "pill" + (x.i === state.sec ? " active" : "");
+    b.type = "button";
+    b.dataset.sec = x.i;
+    b.innerHTML = esc(x.s.key.replace(/^Ch /, "Section ")) + ' <span class="cnt">' + n + "</span>";
+    b.title = x.s.title;
+    secpills.appendChild(b);
+  });
+  /* panels */
+  Array.prototype.forEach.call(main.children, function (el) {
+    if (el.classList.contains("secwrap")) el.classList.toggle("active", +el.dataset.sec === state.sec);
+  });
+  /* pager labels */
+  var prev = SECS[state.sec - 1], next = SECS[state.sec + 1];
+  var pb = document.getElementById("btn-prev"), nb = document.getElementById("btn-next");
+  pb.disabled = !prev; nb.disabled = !next;
+  pb.style.visibility = prev ? "visible" : "hidden";
+  nb.style.visibility = next ? "visible" : "hidden";
+  if (prev) pb.innerHTML = "&larr; " + esc(prev.key);
+  if (next) nb.innerHTML = esc(next.key) + " &rarr;";
+  try { localStorage.setItem("aiquiz-sec", String(state.sec)); } catch (e) {}
+}
+
+function goSec(i, scroll) {
+  i = Math.max(0, Math.min(SECS.length - 1, i));
+  state.sec = i;
+  state.ch = SECS[i].ci;
+  render();
+  if (scroll) {
+    var t = document.querySelector(".tabswrap");
+    window.scrollTo({ top: Math.max(0, t.offsetTop - 60), behavior: "smooth" });
+  }
+}
+
+chaptabs.addEventListener("click", function (e) {
+  var b = e.target.closest(".tab"); if (!b) return;
+  var ci = +b.dataset.ch;
+  var first = sectionsOf(ci)[0];
+  state.ch = ci;
+  if (first) goSec(first.i, true);
+});
+secpills.addEventListener("click", function (e) {
+  var b = e.target.closest(".pill"); if (!b) return;
+  goSec(+b.dataset.sec, true);
+});
+document.getElementById("btn-prev").addEventListener("click", function () { goSec(state.sec - 1, true); });
+document.getElementById("btn-next").addEventListener("click", function () { goSec(state.sec + 1, true); });
+
+/* ---------- search across all sections ---------- */
+var searchBox = document.getElementById("q-search");
+searchBox.addEventListener("input", function () {
+  var v = searchBox.value.trim().toLowerCase();
+  if (!v) {
+    document.body.classList.remove("searching");
+    document.querySelectorAll(".q.hidden").forEach(function (q) { q.classList.remove("hidden"); });
+    document.querySelectorAll(".secwrap.empty").forEach(function (s) { s.classList.remove("empty"); });
+    nores.style.display = "none";
+    render();
+    return;
+  }
+  document.body.classList.add("searching");
+  var hits = 0;
+  document.querySelectorAll(".secwrap").forEach(function (sw) {
+    var shown = 0;
+    sw.querySelectorAll(".q").forEach(function (q) {
+      var match = q.textContent.toLowerCase().indexOf(v) !== -1;
+      q.classList.toggle("hidden", !match);
+      if (match) { shown++; hits++; }
+    });
+    sw.classList.toggle("empty", shown === 0);
+  });
+  srchnote.innerHTML = "<b>" + hits + "</b> sawal match hue &mdash; saare sections mein se. Search box khali karne par tabs wapas aa jayenge.";
+  nores.style.display = hits ? "none" : "block";
+});
+document.addEventListener("keydown", function (e) {
+  if (e.key === "/" && document.activeElement !== searchBox) { e.preventDefault(); searchBox.focus(); }
+  if (e.key === "Escape" && document.activeElement === searchBox) { searchBox.value = ""; searchBox.dispatchEvent(new Event("input")); searchBox.blur(); }
+  if (document.body.classList.contains("searching")) return;
+  if (e.target.tagName === "INPUT") return;
+  if (e.key === "ArrowRight") goSec(state.sec + 1, true);
+  if (e.key === "ArrowLeft") goSec(state.sec - 1, true);
+});
+
+/* ---------- expand / collapse all (active section) ---------- */
+var expBtn = document.getElementById("btn-expand");
+var allOpen = false;
+expBtn.addEventListener("click", function () {
+  allOpen = !allOpen;
+  var scope = document.body.classList.contains("searching") ? document : (document.querySelector(".secwrap.active") || document);
+  scope.querySelectorAll("details.exp").forEach(function (d) { d.open = allOpen; });
+  expBtn.textContent = allOpen ? "Collapse all" : "Expand all";
+  expBtn.classList.toggle("on", allOpen);
+});
+
+/* ---------- theme ---------- */
+var themeBtn = document.getElementById("btn-theme");
+function setTheme(t) {
+  document.documentElement.dataset.theme = t;
+  document.getElementById("theme-ico").innerHTML = t === "dark" ? "&#9728;" : "&#9790;";
+  document.getElementById("theme-txt").textContent = t === "dark" ? "Light" : "Dark";
+  try { localStorage.setItem("aiquiz-theme", t); } catch (e) {}
+}
+themeBtn.addEventListener("click", function () {
+  setTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark");
+});
+
+/* ---------- restore ---------- */
+(function init() {
+  var t = null, s = null;
+  try { t = localStorage.getItem("aiquiz-theme"); s = localStorage.getItem("aiquiz-sec"); } catch (e) {}
+  if (!t) t = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  setTheme(t);
+  var i = s === null ? 0 : parseInt(s, 10);
+  goSec(isNaN(i) ? 0 : i, false);
+})();
+</script>
+</body>
+</html>
